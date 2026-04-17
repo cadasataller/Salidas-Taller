@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Salidas Taller | Mobile First</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 1);
+            border: 1px solid #e2e8f0;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        
+        .loading-overlay {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(4px);
+        }
+
+        .pb-safe {
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        .tag-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        .tag {
+            background: #fef2f2;
+            color: #b91c1c;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            border: 1px solid #fecaca;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 pb-20 md:pb-0">
+
+    <!-- Loading State -->
+    <div id="globalLoader" class="fixed inset-0 z-[100] flex items-center justify-center loading-overlay hidden">
+        <div class="flex flex-col items-center gap-4">
+            <div class="w-12 h-12 border-4 border-red-600 border-t-transparent rounded-full animate-spin"></div>
+            <p class="text-sm font-bold text-slate-600">Sincronizando...</p>
+        </div>
+    </div>
+
+    <!-- Login Screen -->
+    <div id="loginScreen" class="flex items-center justify-center min-h-screen p-3 md:p-8 bg-slate-50">
+        <div class="w-full max-w-md p-6 md:p-10 rounded-[2rem] shadow-xl fade-in bg-white border border-slate-200">
+            <div class="text-center mb-8">
+                <div class="bg-red-600 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-red-200 shadow-lg transform -rotate-3">
+                    <i data-lucide="wrench" class="text-white w-8 h-8"></i>
+                </div>
+                <h1 class="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">Salidas Taller</h1>
+                <p class="text-slate-500 text-sm mt-2">Accede con tu cuenta</p>
+            </div>
+            
+            <form id="loginForm" class="space-y-4 md:space-y-5">
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-1.5 ml-1">Correo Electrónico</label>
+                    <input type="email" id="loginEmail" required class="w-full p-3.5 md:p-4 bg-slate-50 border border-slate-200 rounded-2xl focus:bg-white focus:ring-4 focus:ring-red-500/20 focus:border-red-500 outline-none transition-all text-base" placeholder="usuario@empresa.com">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-1.5 ml-1">Contraseña</label>
+                    <input type="password" id="loginPass" required class="w-full p-3.5 md:p-4 bg-slate-50 border border-slate-200 rounded-2xl focus:bg-white focus:ring-4 focus:ring-red-500/20 focus:border-red-500 outline-none transition-all text-base" placeholder="••••••••">
+                </div>
+                <button type="submit" class="w-full bg-red-600 hover:bg-red-700 active:scale-[0.98] text-white font-bold p-3.5 md:p-4 rounded-2xl shadow-lg shadow-red-200 transition-all flex items-center justify-center gap-2 text-base mt-2">
+                    Iniciar Sesión <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                </button>
+            </form>
+            <div id="loginError" class="mt-6 p-4 bg-red-50 text-red-600 text-sm text-center rounded-2xl hidden font-bold border border-red-100"></div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="mainDashboard" class="hidden min-h-screen flex flex-col">
+        
+        <header class="bg-white border-b border-slate-200 sticky top-0 z-40 px-4 py-3 md:px-6 md:py-4 shadow-sm">
+            <div class="max-w-[1600px] mx-auto flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="bg-red-600 p-2 rounded-xl shadow-sm">
+                        <i data-lucide="wrench" class="text-white w-5 h-5 md:w-6 md:h-6"></i>
+                    </div>
+                    <span class="font-black text-xl md:text-2xl tracking-tight text-slate-900 uppercase">Salidas<span class="text-red-600"> Taller</span></span>
+                </div>
+                
+                <div class="hidden md:flex items-center gap-2 bg-slate-50 p-1.5 rounded-2xl border border-slate-200">
+                    <button data-page="registerExit" onclick="showPage('registerExit')" class="nav-btn reg-link hidden px-5 py-2.5 rounded-xl text-sm font-bold transition-all text-slate-500 hover:bg-white hover:text-slate-900">Registrar</button>
+                    <button data-page="calendarView" onclick="showPage('calendarView')" class="nav-btn px-5 py-2.5 rounded-xl text-sm font-bold transition-all text-slate-500 hover:bg-white hover:text-slate-900">Historial</button>
+                    <button data-page="approvals" onclick="showPage('approvals')" class="nav-btn auth-link hidden px-5 py-2.5 rounded-xl text-sm font-bold transition-all text-slate-500 hover:bg-white hover:text-slate-900">Aprobaciones</button>
+                    <button data-page="adminUsers" onclick="showPage('adminUsers')" class="nav-btn admin-link hidden px-5 py-2.5 rounded-xl text-sm font-bold transition-all text-slate-500 hover:bg-white hover:text-slate-900">Usuarios</button>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <div class="text-right hidden sm:block">
+                        <p id="userNameDisplay" class="text-sm font-bold text-slate-900 leading-none">Cargando...</p>
+                        <p id="userRoleDisplay" class="text-[11px] text-red-500 font-bold uppercase tracking-wider mt-0.5">Online</p>
+                    </div>
+                    <button onclick="handleLogout()" class="p-2 text-slate-400 hover:text-red-600 transition-colors rounded-full hover:bg-red-50 bg-slate-50 md:bg-transparent">
+                        <i data-lucide="log-out" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-grow p-2 md:p-8 max-w-[1600px] mx-auto w-full">
+            
+            <!-- Page: Register Exit -->
+            <div id="page_registerExit" class="max-w-3xl mx-auto fade-in">
+                <div class="bg-white p-4 md:p-8 rounded-2xl md:rounded-[2rem] shadow-sm border border-slate-200">
+                    <div class="mb-5 md:mb-8 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2.5 md:p-3 bg-red-50 text-red-600 rounded-xl">
+                                <i data-lucide="file-plus-2" class="w-5 h-5 md:w-6 md:h-6"></i>
+                            </div>
+                            <div>
+                                <h2 id="formTitle" class="text-lg md:text-2xl font-black text-slate-900 tracking-tight">Nueva Salida</h2>
+                                <p class="text-slate-500 text-[11px] md:text-sm font-medium mt-0.5 md:mt-1">Completa los datos del movimiento.</p>
+                            </div>
+                        </div>
+                        <button id="btnCancelEdit" onclick="cancelEditMode()" class="hidden text-red-500 font-bold text-xs flex items-center gap-1 hover:underline">
+                            <i data-lucide="x-circle" class="w-4 h-4"></i> Cancelar Edición
+                        </button>
+                    </div>
+
+                    <form id="exitForm" class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
+                        <div class="space-y-1 md:col-span-2">
+                            <label class="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Fecha de Salida</label>
+                            <input type="date" id="exitDate" required class="w-full p-2.5 md:p-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500 outline-none transition-all text-sm font-medium">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Responsable</label>
+                            <input type="text" id="exitName" list="namesList" required class="w-full p-2.5 md:p-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500 outline-none transition-all text-sm font-medium">
+                            <datalist id="namesList"></datalist>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Destino</label>
+                            <input type="text" id="exitPlace" list="placesList" required class="w-full p-2.5 md:p-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500 outline-none transition-all text-sm font-medium">
+                            <datalist id="placesList"></datalist>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Acompañante (Enter o Coma para agregar)</label>
+                            <input type="text" id="companionInput" list="companionsList" class="w-full p-2.5 md:p-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500 outline-none transition-all text-sm font-medium" placeholder="Escribir...">
+                            <datalist id="companionsList"></datalist>
+                            <div id="companionTags" class="tag-container"></div>
+                            <input type="hidden" id="exitCompanion">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Vehículo / Equipo</label>
+                            <input type="text" id="exitEquipment" list="equipmentsList" class="w-full p-2.5 md:p-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500 outline-none transition-all text-sm font-medium">
+                            <datalist id="equipmentsList"></datalist>
+                        </div>
+                        <div class="md:col-span-2 space-y-1">
+                            <label class="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Trabajo a realizar</label>
+                            <input type="text" id="exitJob" list="jobsList" required class="w-full p-2.5 md:p-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500 outline-none transition-all text-sm font-medium">
+                            <datalist id="jobsList"></datalist>
+                        </div>
+                        <div class="md:col-span-2 space-y-1">
+                            <label class="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Material (Enter o Coma para agregar)</label>
+                            <input type="text" id="materialInput" list="materialsList" class="w-full p-2.5 md:p-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500 outline-none transition-all text-sm font-medium" placeholder="Escribir...">
+                            <datalist id="materialsList"></datalist>
+                            <div id="materialTags" class="tag-container"></div>
+                            <input type="hidden" id="exitMaterial">
+                        </div>
+
+                        <input type="hidden" id="exitStatus" value="PENDIENTE">
+                        <input type="hidden" id="exitSignedBy" value="S/N">
+
+                        <div class="md:col-span-2 pt-2 md:pt-4">
+                            <button type="submit" id="btnSubmitForm" class="w-full md:w-auto md:float-right bg-red-600 hover:bg-red-700 active:scale-[0.98] text-white px-6 py-3.5 md:py-3.5 rounded-xl shadow-lg shadow-red-200 font-bold transition-all flex items-center justify-center gap-2 text-sm md:text-base tracking-widest uppercase">
+                                <i data-lucide="cloud-upload" class="w-4 h-4 md:w-5 md:h-5"></i> <span id="btnSubmitText">Guardar Salida</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Page: Calendar View (History + Integrated Search) -->
+            <div id="page_calendarView" class="hidden space-y-3 md:space-y-6 fade-in">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-3 md:gap-4 bg-white p-3 md:p-6 rounded-2xl md:rounded-[2rem] border border-slate-200 shadow-sm">
+                    <div class="w-full md:w-auto flex flex-col gap-2 md:gap-4">
+                        <div class="px-1">
+                            <h2 class="text-lg md:text-2xl font-black text-slate-900 tracking-tight">Historial de Salidas</h2>
+                            <p id="currentWeekRange" class="text-red-600 font-bold text-[11px] md:text-sm mt-0.5 uppercase tracking-wide"></p>
+                        </div>
+                        
+                        <!-- Search Box inside History -->
+                        <div class="relative group mt-2">
+                            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                                <i data-lucide="search" class="w-4 h-4 text-slate-400 group-focus-within:text-red-500 transition-colors"></i>
+                            </div>
+                            <input type="text" id="historySearchInput" oninput="triggerHistorySearch(this.value)" placeholder="Buscar por nombre, destino, trabajo..." class="w-full md:w-80 pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-red-500/10 focus:border-red-500 outline-none transition-all text-sm font-medium">
+                        </div>
+
+                        <div id="calendarControls" class="flex items-center gap-6 px-1 border-b-2 border-slate-100/60 mt-2 md:mt-4 transition-opacity">
+                            <button onclick="setViewMode('day')" id="tab_day" class="pb-2 text-sm transition-all text-red-800 font-bold border-b-2 border-red-800">Día</button>
+                            <button onclick="setViewMode('week')" id="tab_week" class="pb-2 text-sm transition-all text-slate-500 font-medium hover:text-slate-800 border-b-2 border-transparent">Semana</button>
+                            <button onclick="setViewMode('month')" id="tab_month" class="pb-2 text-sm transition-all text-slate-500 font-medium hover:text-slate-800 border-b-2 border-transparent uppercase">MES</button>
+                        </div>
+                    </div>
+                    
+                    <div id="dateNavigation" class="flex items-center bg-slate-50 rounded-xl border border-slate-200 p-1 w-full md:w-auto justify-between md:justify-start transition-opacity">
+                        <button onclick="changeDateOffset(-1)" class="p-2.5 md:p-2 hover:bg-white rounded-lg transition-all active:scale-95"><i data-lucide="chevron-left" class="w-5 h-5 text-slate-600"></i></button>
+                        <button onclick="goToToday()" class="px-6 py-2 text-xs md:text-sm font-black text-slate-700 hover:bg-white rounded-lg transition-all">HOY</button>
+                        <button onclick="changeDateOffset(1)" class="p-2.5 md:p-2 hover:bg-white rounded-lg transition-all active:scale-95"><i data-lucide="chevron-right" class="w-5 h-5 text-slate-600"></i></button>
+                    </div>
+                </div>
+                
+                <div id="calendarBody" class="grid grid-cols-1 lg:grid-cols-7 gap-3 lg:gap-0 lg:bg-white lg:border lg:border-slate-200 lg:rounded-[2rem] overflow-hidden lg:shadow-sm lg:min-h-[600px]"></div>
+            </div>
+
+            <!-- Page: Approvals -->
+            <div id="page_approvals" class="hidden space-y-3 md:space-y-6 fade-in max-w-4xl mx-auto">
+                <div class="bg-white p-4 md:p-8 rounded-2xl md:rounded-[2rem] shadow-sm border border-slate-200">
+                    <h2 class="text-lg md:text-xl font-black text-slate-900 mb-2 flex items-center gap-2">
+                        <i data-lucide="check-circle" class="text-red-600 w-5 h-5 md:w-6 md:h-6"></i> Pendientes de Aprobación
+                    </h2>
+                    <p class="text-[11px] md:text-sm text-slate-500 mb-4 md:mb-6">Revisa las salidas y autoriza las que correspondan. Toca para detalles.</p>
+                    <div id="approvalsList" class="flex flex-col gap-3 md:gap-4"></div>
+                </div>
+            </div>
+
+            <!-- Page: Admin (Users) -->
+            <div id="page_adminUsers" class="hidden space-y-4 md:space-y-6 fade-in max-w-5xl mx-auto">
+                <div id="adminFormSection" class="hidden bg-white p-4 md:p-8 rounded-2xl md:rounded-[2rem] shadow-sm border border-slate-200">
+                    <div class="flex justify-between items-center mb-4 md:mb-6">
+                        <h2 id="adminFormTitle" class="text-lg md:text-xl font-black text-slate-900 flex items-center gap-2">
+                            <i data-lucide="user-plus" class="text-red-600 w-5 h-5 md:w-6 md:h-6"></i> Registrar / Actualizar Usuario
+                        </h2>
+                    </div>
+                    <form id="userForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="space-y-1">
+                            <label class="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Nombre Completo</label>
+                            <input type="text" id="newUserName" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500 outline-none transition-all text-sm font-medium">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Correo Electrónico</label>
+                            <input type="email" id="newUserEmail" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500 outline-none transition-all text-sm font-medium">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Contraseña</label>
+                            <input type="text" id="newUserPass" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500 outline-none transition-all text-sm font-medium" minlength="6">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Rol del Sistema</label>
+                            <select id="newUserRole" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500 outline-none appearance-none text-sm font-bold text-slate-700">
+                                <option value="usuario">Usuario</option>
+                                <option value="supervisor">Supervisor</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-2 pt-2">
+                            <button type="submit" id="btnSubmitUser" class="w-full bg-slate-900 hover:bg-slate-800 active:scale-[0.98] text-white px-6 py-3.5 rounded-xl shadow-lg font-bold transition-all flex items-center justify-center gap-2 text-sm md:text-base uppercase tracking-widest">
+                                <i data-lucide="user-check" class="w-4 h-4 md:w-5 md:h-5"></i> <span id="btnSubmitUserText">Registrar / Actualizar</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="bg-white rounded-2xl md:rounded-[2rem] shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-4 md:p-6 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
+                        <h3 class="font-black text-slate-800 text-base md:text-lg tracking-tight">Directorio de Personal</h3>
+                    </div>
+                    <div class="overflow-x-auto custom-scrollbar">
+                        <table class="w-full text-left whitespace-nowrap">
+                            <thead class="bg-slate-50 border-b border-slate-100">
+                                <tr>
+                                    <th class="px-4 md:px-5 py-3 md:py-4 text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest">Usuario</th>
+                                    <th class="px-4 md:px-5 py-3 md:py-4 text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest">Email</th>
+                                    <th class="px-4 md:px-5 py-3 md:py-4 text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Rol</th>
+                                </tr>
+                            </thead>
+                            <tbody id="userTableBody" class="divide-y divide-slate-100 text-sm"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal Detalles -->
+    <div id="detailsModal" class="fixed inset-0 z-[110] hidden items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm fade-in">
+        <div class="bg-white w-full max-w-md rounded-[2rem] shadow-2xl overflow-hidden flex flex-col transform transition-all">
+            <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <div class="flex items-center gap-2">
+                    <div class="bg-red-100 p-1.5 rounded-lg text-red-600"><i data-lucide="info" class="w-4 h-4"></i></div>
+                    <h3 class="font-black text-slate-800 text-lg">Detalles de Salida</h3>
+                </div>
+                <button onclick="closeExitDetails()" class="p-1.5 bg-white rounded-full border border-slate-200 hover:bg-slate-100 text-slate-500 transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <div id="detailsModalContent" class="p-5 md:p-6 overflow-y-auto max-h-[70vh]"></div>
+            <div class="p-4 bg-slate-50 border-t border-slate-100 flex justify-end">
+                <button onclick="closeExitDetails()" class="px-6 py-2.5 bg-slate-800 text-white text-sm font-bold rounded-xl hover:bg-slate-900 transition-colors w-full md:w-auto">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Confirmación Personalizado -->
+    <div id="confirmModal" class="fixed inset-0 z-[120] hidden items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm fade-in">
+        <div class="bg-white w-full max-w-sm rounded-[2rem] shadow-2xl p-6 flex flex-col items-center text-center transform transition-all">
+            <div class="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mb-4">
+                <i data-lucide="alert-triangle" class="w-8 h-8"></i>
+            </div>
+            <h3 id="confirmTitle" class="font-black text-slate-900 text-xl mb-2">¿Estás seguro?</h3>
+            <p id="confirmMessage" class="text-sm text-slate-500 mb-6">Esta acción no se puede deshacer.</p>
+            <div class="flex gap-3 w-full">
+                <button onclick="closeConfirmModal()" class="flex-1 py-3.5 bg-slate-100 text-slate-700 font-bold rounded-xl hover:bg-slate-200 transition-colors">Cancelar</button>
+                <button id="confirmBtn" class="flex-1 py-3.5 bg-red-600 text-white font-bold rounded-xl hover:bg-red-700 shadow-lg shadow-red-200 transition-colors">Eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Alerta Personalizado -->
+    <div id="alertModal" class="fixed inset-0 z-[120] hidden items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm fade-in">
+        <div class="bg-white w-full max-w-sm rounded-[2rem] shadow-2xl p-6 flex flex-col items-center text-center transform transition-all">
+            <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mb-4">
+                <i data-lucide="info" class="w-8 h-8"></i>
+            </div>
+            <h3 id="alertTitle" class="font-black text-slate-900 text-xl mb-2">Aviso</h3>
+            <p id="alertMessage" class="text-sm text-slate-500 mb-6 whitespace-pre-line"></p>
+            <button onclick="closeAlertModal()" class="w-full py-3.5 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 shadow-lg transition-colors">Entendido</button>
+        </div>
+    </div>
+
+    <!-- Mobile Navigation -->
+    <nav class="md:hidden fixed bottom-0 inset-x-0 bg-white border-t border-slate-200 pb-safe z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+        <div class="flex justify-around items-center p-2">
+            <button data-page="registerExit" onclick="showPage('registerExit')" class="nav-btn reg-link hidden flex flex-col items-center justify-center p-2 min-w-[70px] rounded-2xl transition-all text-slate-400">
+                <i data-lucide="plus-circle" class="w-5 h-5 mb-1"></i><span class="text-[10px] font-bold">Nuevo</span>
+            </button>
+            <button data-page="calendarView" onclick="showPage('calendarView')" class="nav-btn mobile-nav flex flex-col items-center justify-center p-2 min-w-[70px] rounded-2xl transition-all text-slate-400">
+                <i data-lucide="calendar" class="w-5 h-5 mb-1"></i><span class="text-[10px] font-bold">Historial</span>
+            </button>
+            <button data-page="approvals" onclick="showPage('approvals')" class="nav-btn auth-link mobile-nav hidden flex flex-col items-center justify-center p-2 min-w-[70px] rounded-2xl transition-all text-slate-400">
+                <i data-lucide="check-circle" class="w-5 h-5 mb-1"></i><span class="text-[10px] font-bold">Aprobar</span>
+            </button>
+            <button data-page="adminUsers" onclick="showPage('adminUsers')" class="nav-btn admin-link mobile-nav hidden flex flex-col items-center justify-center p-2 min-w-[70px] rounded-2xl transition-all text-slate-400">
+                <i data-lucide="shield" class="w-5 h-5 mb-1"></i><span class="text-[10px] font-bold">Admin</span>
+            </button>
+        </div>
+    </nav>
+
+    <div id="toast" class="fixed bottom-24 md:bottom-8 right-4 md:right-8 bg-slate-900 text-white px-4 py-3 md:px-6 md:py-4 rounded-2xl shadow-2xl transform translate-y-32 transition-all duration-300 z-[100] flex items-center gap-3 w-[calc(100%-2rem)] md:w-auto">
+        <span id="toastMsg" class="font-bold text-sm"></span>
+    </div>
+
+    <script>
+        const SB_URL = "https://xzwsefliqfflqjxbrvij.supabase.co";
+        const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6d3NlZmxpcWZmbHFqeGJydmlqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYyNzY4MzcsImV4cCI6MjA5MTg1MjgzN30.lJZDMgRqjdPfRiDW8wAe0VLqXCJ94x4Asf33dNVnaMM";
+        const supabaseClient = window.supabase.createClient(SB_URL, SB_KEY);
+
+        let userProfile = null;
+        let exitsData = [];
+        let currentViewMode = 'day';
+        let currentDateAnchor = new Date();
+        let companionTagsArray = [];
+        let materialTagsArray = [];
+        let editingExitId = null;
+        let activeSearchTerm = "";
+        let pollingTimer = null;
+        let confirmAction = null; // Variable para guardar la acción de confirmación
+
+        const loader = document.getElementById('globalLoader');
+
+        // Funciones para Modales Personalizados
+        function showConfirmModal(title, message, action) {
+            document.getElementById('confirmTitle').textContent = title;
+            document.getElementById('confirmMessage').textContent = message;
+            confirmAction = action;
+            document.getElementById('confirmModal').classList.replace('hidden', 'flex');
+            lucide.createIcons();
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('confirmModal').classList.replace('flex', 'hidden');
+            confirmAction = null;
+        }
+
+        document.getElementById('confirmBtn').addEventListener('click', () => {
+            if (confirmAction) confirmAction();
+            closeConfirmModal();
+        });
+
+        function showAlertModal(title, message) {
+            document.getElementById('alertTitle').textContent = title;
+            document.getElementById('alertMessage').textContent = message;
+            document.getElementById('alertModal').classList.replace('hidden', 'flex');
+            lucide.createIcons();
+        }
+
+        function closeAlertModal() {
+            document.getElementById('alertModal').classList.replace('flex', 'hidden');
+        }
+
+        async function checkUser() {
+            const { data: { user } } = await supabaseClient.auth.getUser();
+            if (user) {
+                let { data: profile } = await supabaseClient.from('profiles').select('*').eq('id', user.id).maybeSingle();
+                if (!profile) {
+                    profile = { id: user.id, name: user.email.split('@')[0], email: user.email, role: 'admin', is_admin: true };
+                    await supabaseClient.from('profiles').upsert([profile]);
+                }
+                userProfile = profile;
+                initDashboard();
+                startPolling();
+            } else { setLoading(false); }
+        }
+
+        function startPolling() {
+            if(pollingTimer) clearInterval(pollingTimer);
+            pollingTimer = setInterval(() => {
+                fetchExits(true);
+                if(!document.getElementById('page_adminUsers').classList.contains('hidden')) renderUsers();
+            }, 10000);
+        }
+
+        async function initDashboard() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('mainDashboard').classList.remove('hidden');
+            document.getElementById('userNameDisplay').textContent = (userProfile.name || 'Usuario').toUpperCase();
+            document.getElementById('userRoleDisplay').textContent = (userProfile.role || 'USUARIO').toUpperCase();
+            
+            const isAdmin = userProfile.role === 'admin' || userProfile.is_admin;
+            const isSupervisor = userProfile.role === 'supervisor';
+            const isUser = !isAdmin && !isSupervisor;
+
+            if (isAdmin) {
+                document.querySelectorAll('.admin-link').forEach(el => el.classList.remove('hidden'));
+                document.getElementById('adminFormSection')?.classList.remove('hidden');
+            }
+
+            if (isAdmin || isSupervisor) {
+                document.querySelectorAll('.auth-link').forEach(el => el.classList.remove('hidden'));
+                document.querySelectorAll('.reg-link').forEach(el => el.classList.remove('hidden'));
+            }
+
+            document.getElementById('exitDate').valueAsDate = new Date();
+
+            await fetchExits();
+            currentDateAnchor = new Date();
+            
+            if (isUser) {
+                showPage('calendarView');
+            } else if (isSupervisor) {
+                showPage('approvals');
+            } else {
+                showPage('registerExit');
+            }
+            
+            setLoading(false);
+            lucide.createIcons();
+        }
+
+        async function fetchExits(isSilent = false) {
+            if(!isSilent) setLoading(true);
+            const { data, error } = await supabaseClient.from('exits').select('*').order('created_at', { ascending: false });
+            if (!error) {
+                exitsData = data;
+                updateDatalists();
+                if (!document.getElementById('page_calendarView').classList.contains('hidden')) renderCalendar();
+                if (!document.getElementById('page_approvals').classList.contains('hidden')) renderApprovals();
+            }
+            if(!isSilent) setLoading(false);
+        }
+
+        function updateDatalists() {
+            const unique = (key) => [...new Set(exitsData.map(e => e[key]).filter(Boolean))];
+            const fill = (id, list) => {
+                const dl = document.getElementById(id);
+                if (dl) dl.innerHTML = list.map(v => `<option value="${v}">`).join('');
+            };
+            fill('namesList', unique('name'));
+            fill('placesList', unique('place'));
+            fill('equipmentsList', unique('equipment'));
+            fill('jobsList', unique('job'));
+            const extractList = (key) => {
+                let all = [];
+                exitsData.forEach(e => { if(e[key]) all.push(...e[key].split(',').map(s => s.trim())); });
+                return [...new Set(all)];
+            };
+            fill('companionsList', extractList('companion'));
+            fill('materialsList', extractList('material'));
+        }
+
+        function setupTagInput(inputId, containerId, hiddenId, listRef) {
+            const input = document.getElementById(inputId);
+            const container = document.getElementById(containerId);
+            const hidden = document.getElementById(hiddenId);
+            const renderTags = () => {
+                container.innerHTML = listRef.map((t, i) => `
+                    <div class="tag">${t} <button type="button" onclick="removeTagGlobal('${containerId}', ${i})"><i data-lucide="x" class="w-3 h-3"></i></button></div>
+                `).join('');
+                hidden.value = listRef.join(', ');
+                lucide.createIcons();
+            };
+            const addCurrentValue = () => {
+                const val = input.value.trim().replace(/,/g, '');
+                if (val) { 
+                    if (!listRef.includes(val)) listRef.push(val); 
+                    input.value = ''; 
+                    renderTags(); 
+                }
+            };
+            input.onkeydown = (e) => { if (e.key === 'Enter' || e.keyCode === 13) { e.preventDefault(); addCurrentValue(); } };
+            input.oninput = () => { if (input.value.includes(',')) addCurrentValue(); };
+            input.onblur = () => { addCurrentValue(); }; // Solución para móviles: agrega al tocar fuera del campo
+            renderTags();
+        }
+
+        window.removeTagGlobal = (cId, idx) => {
+            if (cId === 'companionTags') { companionTagsArray.splice(idx, 1); setupTagInput('companionInput', 'companionTags', 'exitCompanion', companionTagsArray); }
+            else { materialTagsArray.splice(idx, 1); setupTagInput('materialInput', 'materialTags', 'exitMaterial', materialTagsArray); }
+        };
+
+        function startEditExit(id) {
+            const exit = exitsData.find(e => e.id === id);
+            if (!exit) return;
+            editingExitId = id;
+            showPage('registerExit');
+            document.getElementById('exitDate').value = exit.date_str;
+            document.getElementById('exitName').value = exit.name;
+            document.getElementById('exitPlace').value = exit.place;
+            document.getElementById('exitEquipment').value = exit.equipment || '';
+            document.getElementById('exitJob').value = exit.job;
+            document.getElementById('exitStatus').value = exit.status;
+            document.getElementById('exitSignedBy').value = exit.signed_by;
+            companionTagsArray = exit.companion ? exit.companion.split(',').map(s => s.trim()).filter(Boolean) : [];
+            materialTagsArray = exit.material ? exit.material.split(',').map(s => s.trim()).filter(Boolean) : [];
+            setupTagInput('companionInput', 'companionTags', 'exitCompanion', companionTagsArray);
+            setupTagInput('materialInput', 'materialTags', 'exitMaterial', materialTagsArray);
+            document.getElementById('formTitle').textContent = "Editar Salida";
+            document.getElementById('btnSubmitText').textContent = "Actualizar Registro";
+            document.getElementById('btnCancelEdit').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function copyExitToForm(id) {
+            const exit = exitsData.find(e => e.id === id);
+            if (!exit) return;
+            cancelEditMode();
+            showPage('registerExit');
+            document.getElementById('exitDate').value = exit.date_str;
+            document.getElementById('exitName').value = exit.name;
+            document.getElementById('exitPlace').value = exit.place;
+            document.getElementById('exitEquipment').value = exit.equipment || '';
+            document.getElementById('exitJob').value = exit.job;
+            companionTagsArray = exit.companion ? exit.companion.split(',').map(s => s.trim()).filter(Boolean) : [];
+            materialTagsArray = exit.material ? exit.material.split(',').map(s => s.trim()).filter(Boolean) : [];
+            setupTagInput('companionInput', 'companionTags', 'exitCompanion', companionTagsArray);
+            setupTagInput('materialInput', 'materialTags', 'exitMaterial', materialTagsArray);
+            showToast("Datos copiados al formulario");
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function cancelEditMode() {
+            editingExitId = null;
+            document.getElementById('exitForm').reset();
+            document.getElementById('exitDate').valueAsDate = new Date();
+            companionTagsArray = []; materialTagsArray = [];
+            setupTagInput('companionInput', 'companionTags', 'exitCompanion', companionTagsArray);
+            setupTagInput('materialInput', 'materialTags', 'exitMaterial', materialTagsArray);
+            document.getElementById('formTitle').textContent = "Nueva Salida";
+            document.getElementById('btnSubmitText').textContent = "Guardar Salida";
+            document.getElementById('btnCancelEdit').classList.add('hidden');
+        }
+
+        function setViewMode(mode) {
+            currentViewMode = mode;
+            activeSearchTerm = "";
+            document.getElementById('historySearchInput').value = "";
+            ['day', 'week', 'month'].forEach(m => {
+                const btn = document.getElementById(`tab_${m}`);
+                btn.className = (m === mode) ? "pb-2 text-sm transition-all text-red-800 font-bold border-b-2 border-red-800" : "pb-2 text-sm transition-all text-slate-500 font-medium hover:text-slate-800 border-b-2 border-transparent";
+            });
+            renderCalendar();
+        }
+
+        function triggerHistorySearch(val) {
+            activeSearchTerm = val.trim().toLowerCase();
+            renderCalendar();
+        }
+
+        function changeDateOffset(offset) {
+            if (currentViewMode === 'day') currentDateAnchor.setDate(currentDateAnchor.getDate() + offset);
+            else if (currentViewMode === 'week') currentDateAnchor.setDate(currentDateAnchor.getDate() + (offset * 7));
+            else if (currentViewMode === 'month') currentDateAnchor.setMonth(currentDateAnchor.getMonth() + offset);
+            renderCalendar();
+        }
+
+        function goToToday() { currentDateAnchor = new Date(); renderCalendar(); }
+
+        function renderCalendar() {
+            const body = document.getElementById('calendarBody');
+            const rangeDisplay = document.getElementById('currentWeekRange');
+            const isAdmin = userProfile.role === 'admin' || userProfile.is_admin;
+            body.innerHTML = '';
+
+            if (activeSearchTerm) {
+                document.getElementById('calendarControls').style.opacity = '0.3';
+                document.getElementById('dateNavigation').style.opacity = '0.3';
+                rangeDisplay.textContent = `Buscando: "${activeSearchTerm}"`;
+                
+                const filtered = exitsData.filter(e => 
+                    e.name.toLowerCase().includes(activeSearchTerm) ||
+                    e.place.toLowerCase().includes(activeSearchTerm) ||
+                    e.job.toLowerCase().includes(activeSearchTerm) ||
+                    (e.equipment && e.equipment.toLowerCase().includes(activeSearchTerm))
+                );
+
+                if (filtered.length === 0) {
+                    body.innerHTML = `<div class="col-span-full flex flex-col items-center justify-center p-12"><i data-lucide="search-x" class="w-12 h-12 text-slate-300 mb-2"></i><p class="text-slate-400 font-bold">No se encontraron resultados</p></div>`;
+                } else {
+                    body.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-4 lg:bg-white lg:rounded-[2rem]";
+                    body.innerHTML = filtered.map(e => renderExitCard(e, isAdmin)).join('');
+                }
+                lucide.createIcons();
+                return;
+            }
+
+            document.getElementById('calendarControls').style.opacity = '1';
+            document.getElementById('dateNavigation').style.opacity = '1';
+            
+            let startDate, endDate;
+            if (currentViewMode === 'day') {
+                startDate = new Date(currentDateAnchor); endDate = new Date(currentDateAnchor);
+                rangeDisplay.textContent = startDate.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                body.className = "grid grid-cols-1 lg:bg-white lg:border lg:border-slate-200 lg:rounded-[2rem] overflow-hidden lg:shadow-sm lg:min-h-[400px]";
+            } else if (currentViewMode === 'week') {
+                startDate = (function(d){ d = new Date(d); let day = d.getDay(); let diff = d.getDate() - day + (day === 0 ? -6 : 1); return new Date(d.setDate(diff)); })(currentDateAnchor);
+                endDate = new Date(startDate); endDate.setDate(startDate.getDate() + 6);
+                rangeDisplay.textContent = `${startDate.toLocaleDateString('es-ES', { month: 'short', day: 'numeric' })} - ${endDate.toLocaleDateString('es-ES', { month: 'short', day: 'numeric', year: 'numeric' })}`;
+                body.className = "grid grid-cols-1 lg:grid-cols-7 gap-3 lg:gap-0 lg:bg-white lg:border lg:border-slate-200 lg:rounded-[2rem] overflow-hidden lg:shadow-sm lg:min-h-[600px]";
+            } else {
+                startDate = new Date(currentDateAnchor.getFullYear(), currentDateAnchor.getMonth(), 1);
+                endDate = new Date(currentDateAnchor.getFullYear(), currentDateAnchor.getMonth() + 1, 0);
+                rangeDisplay.textContent = startDate.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' }).toUpperCase();
+                body.className = "grid grid-cols-1 lg:grid-cols-7 gap-3 lg:gap-0 lg:bg-white lg:border lg:border-slate-200 lg:rounded-[2rem] overflow-hidden lg:shadow-sm lg:min-h-[600px]";
+            }
+            
+            let curr = new Date(startDate);
+            while (curr <= endDate) {
+                const d = new Date(curr); const iso = d.toISOString().split('T')[0];
+                const dayExits = exitsData.filter(e => e.date_str === iso);
+                if (currentViewMode === 'month' && window.innerWidth < 1024 && dayExits.length === 0 && d.toLocaleDateString() !== new Date().toLocaleDateString()) {
+                    curr.setDate(curr.getDate() + 1); continue;
+                }
+                const isToday = new Date().toLocaleDateString() === d.toLocaleDateString();
+                const isWeekend = d.getDay() === 0 || d.getDay() === 6;
+                const col = document.createElement('div');
+                col.className = `flex flex-col bg-white lg:bg-transparent rounded-2xl lg:rounded-none p-4 shadow-sm lg:shadow-none border lg:border-0 lg:border-r border-slate-100 ${isToday ? 'lg:bg-red-50/40 ring-2 lg:ring-0 ring-red-500' : ''}`;
+                col.innerHTML = `
+                    <div class="flex lg:flex-col justify-center items-center mb-4 lg:border-b lg:pb-4">
+                        <div class="text-center">
+                            <span class="block text-2xl lg:text-3xl font-black ${isToday ? 'text-red-600' : 'text-slate-800'} tracking-tighter">${d.getDate()}</span>
+                            <span class="block text-[10px] font-black uppercase tracking-widest text-slate-500">${['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'][d.getDay()]}</span>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        ${dayExits.length === 0 ? '<p class="text-[10px] text-slate-300 text-center py-4 uppercase font-bold opacity-50">S/N</p>' : dayExits.map(e => renderExitCard(e, isAdmin)).join('')}
+                    </div>
+                `;
+                body.appendChild(col); curr.setDate(curr.getDate() + 1);
+            }
+            lucide.createIcons();
+        }
+
+        function renderExitCard(e, isAdmin) {
+            const isAuth = e.status.toUpperCase() === 'AUTORIZADO';
+            const actionButtons = isAdmin ? `
+                <div class="absolute top-1.5 right-1.5 flex gap-1 lg:opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button title="Copiar" onclick="event.stopPropagation(); copyExitToForm('${e.id}')" class="p-1.5 bg-white/20 hover:bg-white/40 rounded-lg text-white backdrop-blur-md"><i data-lucide="copy" class="w-3 h-3"></i></button>
+                    <button title="Editar" onclick="event.stopPropagation(); startEditExit('${e.id}')" class="p-1.5 bg-white/20 hover:bg-white/40 rounded-lg text-white backdrop-blur-md"><i data-lucide="edit-3" class="w-3 h-3"></i></button>
+                    <button title="Eliminar" onclick="event.stopPropagation(); handleDeleteExit('${e.id}')" class="p-1.5 bg-white/20 hover:bg-white/40 rounded-lg text-white backdrop-blur-md"><i data-lucide="trash-2" class="w-3 h-3"></i></button>
+                </div>` : '';
+
+            return `
+            <div onclick="showExitDetails('${e.id}')" class="p-3 rounded-xl border border-transparent shadow-sm group relative cursor-pointer hover:scale-[1.02] transition-all ${isAuth ? 'bg-green-600 text-white' : 'bg-red-600 text-white'}">
+                ${actionButtons}
+                <div class="flex items-center gap-1.5 mb-1.5">
+                    <span class="text-[9px] font-black bg-white/20 px-1.5 py-0.5 rounded uppercase tracking-tighter">${activeSearchTerm ? e.date_str + ' • ' : ''}${e.time_str}</span>
+                </div>
+                <p class="text-sm font-black leading-tight pr-10 uppercase tracking-tight">${e.name}</p>
+                <div class="mt-2 space-y-1 opacity-90">
+                    <p class="text-[10px] flex items-start gap-1.5 font-bold line-clamp-1"><i data-lucide="map-pin" class="w-3 h-3 shrink-0 mt-0.5"></i> ${e.place}</p>
+                    <p class="text-[10px] flex items-start gap-1.5 font-medium line-clamp-1"><i data-lucide="briefcase" class="w-3 h-3 shrink-0 mt-0.5"></i> ${e.job}</p>
+                    ${e.equipment ? `<p class="text-[10px] flex items-start gap-1.5 font-medium line-clamp-1"><i data-lucide="truck" class="w-3 h-3 shrink-0 mt-0.5"></i> ${e.equipment}</p>` : ''}
+                </div>
+                <div class="mt-3 pt-3 border-t border-white/20 flex items-center gap-2 text-[10px] font-black uppercase">
+                    <i data-lucide="${isAuth ? 'check' : 'alert-triangle'}" class="w-4 h-4"></i> 
+                    ${e.status}
+                </div>
+            </div>`;
+        }
+
+        const exitForm = document.getElementById('exitForm');
+        exitForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            setLoading(true);
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+            
+            const newExit = {
+                name: document.getElementById('exitName').value,
+                companion: document.getElementById('exitCompanion').value,
+                equipment: document.getElementById('exitEquipment').value,
+                place: document.getElementById('exitPlace').value,
+                job: document.getElementById('exitJob').value,
+                material: document.getElementById('exitMaterial').value,
+                status: document.getElementById('exitStatus').value,
+                signed_by: document.getElementById('exitSignedBy').value,
+                date_str: document.getElementById('exitDate').value,
+                time_str: timeStr,
+                user_id: (await supabaseClient.auth.getUser()).data.user.id
+            };
+            let error;
+            if (editingExitId) { const { error: err } = await supabaseClient.from('exits').update(newExit).eq('id', editingExitId); error = err; }
+            else { const { error: err } = await supabaseClient.from('exits').insert([newExit]); error = err; }
+            if (error) showToast("Error: " + error.message, true);
+            else { showToast(editingExitId ? "Actualizado" : "Guardado"); cancelEditMode(); await fetchExits(); showPage('calendarView'); }
+            setLoading(false);
+        });
+
+        async function authorizeExit(id) {
+            setLoading(true);
+            const { error } = await supabaseClient.from('exits').update({ 
+                status: 'AUTORIZADO',
+                signed_by: userProfile.email 
+            }).eq('id', id);
+
+            if (error) showToast("Error: " + error.message, true);
+            else { showToast("Autorizado"); await fetchExits(); }
+            setLoading(false);
+        }
+
+        function handleDeleteExit(id) {
+            showConfirmModal(
+                "Eliminar Salida",
+                "¿Estás seguro de eliminar permanentemente este registro?",
+                async () => {
+                    setLoading(true);
+                    
+                    // Auto-detectar si el ID es numérico o un UUID
+                    const targetId = isNaN(id) ? id : Number(id);
+
+                    const { error } = await supabaseClient
+                        .from('exits')
+                        .delete()
+                        .eq('id', targetId);
+                        
+                    if(error) {
+                        showToast("Error al eliminar: " + error.message, true);
+                    } else {
+                        // Verificar si realmente se borró de la DB (Para detectar bloqueos silenciosos de RLS)
+                        const { data: verifyData } = await supabaseClient.from('exits').select('id').eq('id', targetId);
+                        
+                        if (verifyData && verifyData.length > 0) {
+                            showAlertModal(
+                                "Acción Bloqueada (RLS)", 
+                                "El registro no se pudo borrar debido a la política de seguridad (RLS) de Supabase.\n\nVe a tu panel de Supabase > Authentication > Policies y asegúrate de permitir DELETE en la tabla 'exits'."
+                            );
+                            showToast("Bloqueado por permisos (RLS)", true);
+                        } else {
+                            await fetchExits(true); 
+                            showToast("Registro eliminado con éxito");
+                        }
+                    }
+                    setLoading(false);
+                }
+            );
+        }
+
+        function renderApprovals() {
+            const list = document.getElementById('approvalsList');
+            const pending = exitsData.filter(e => e.status && e.status.trim().toUpperCase() === 'PENDIENTE');
+            if (pending.length === 0) {
+                list.innerHTML = '<div class="text-center py-10 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200"><p class="text-slate-400 text-sm font-bold uppercase tracking-widest">No hay salidas pendientes</p></div>';
+                return;
+            }
+            list.innerHTML = pending.map(e => `
+                <div onclick="showExitDetails('${e.id}')" class="bg-slate-50 p-5 rounded-[1.5rem] border border-slate-200 shadow-sm flex flex-col gap-4 cursor-pointer hover:bg-white transition-colors">
+                    <div class="flex-1">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-[10px] font-black bg-red-100 text-red-600 px-2.5 py-1 rounded-lg uppercase tracking-wider">PENDIENTE</span>
+                            <span class="text-[10px] font-bold text-slate-400 font-mono">${e.date_str} • ${e.time_str}</span>
+                        </div>
+                        <h3 class="text-base font-black text-slate-900 mb-3 uppercase tracking-tight">${e.name}</h3>
+                        <div class="grid grid-cols-1 gap-2.5">
+                            <div class="flex items-start gap-2.5"><div class="bg-white p-1.5 rounded-lg border border-slate-100"><i data-lucide="map-pin" class="w-4 h-4 text-slate-400"></i></div><div><p class="text-[9px] font-black text-slate-400 uppercase leading-none mb-0.5">Destino</p><p class="text-xs font-bold text-slate-700 leading-tight">${e.place}</p></div></div>
+                            <div class="flex items-start gap-2.5"><div class="bg-white p-1.5 rounded-lg border border-slate-100"><i data-lucide="briefcase" class="w-4 h-4 text-slate-400"></i></div><div><p class="text-[9px] font-black text-slate-400 uppercase leading-none mb-0.5">Trabajo a realizar</p><p class="text-xs font-medium text-slate-600 leading-tight">${e.job}</p></div></div>
+                            <div class="flex items-start gap-2.5"><div class="bg-white p-1.5 rounded-lg border border-slate-100"><i data-lucide="truck" class="w-4 h-4 text-slate-400"></i></div><div><p class="text-[9px] font-black text-slate-400 uppercase leading-none mb-0.5">Vehículo / Equipo</p><p class="text-xs font-medium text-slate-600 leading-tight">${e.equipment || 'No especificado'}</p></div></div>
+                        </div>
+                    </div>
+                    <div class="pt-2 border-t border-slate-200/60">
+                        <button onclick="event.stopPropagation(); authorizeExit('${e.id}')" class="w-full bg-green-600 hover:bg-green-700 active:scale-[0.98] text-white py-3.5 rounded-xl font-bold text-sm transition-all shadow-lg shadow-green-100 flex items-center justify-center gap-2 uppercase tracking-widest"><i data-lucide="check-circle" class="w-4 h-4"></i> Autorizar</button>
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function showPage(id) {
+            document.querySelectorAll('main > div').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`page_${id}`).classList.remove('hidden');
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                const isActive = btn.dataset.page === id;
+                if (btn.classList.contains('mobile-nav')) {
+                    btn.classList.toggle('bg-red-50', isActive); btn.classList.toggle('text-red-600', isActive); btn.classList.toggle('text-slate-400', !isActive);
+                } else {
+                    btn.classList.toggle('bg-red-600', isActive); btn.classList.toggle('text-white', isActive); btn.classList.toggle('text-slate-500', !isActive);
+                }
+            });
+            if (id === 'calendarView') renderCalendar();
+            if (id === 'approvals') renderApprovals();
+            if (id === 'adminUsers') renderUsers();
+        }
+
+        async function renderUsers() {
+            const { data } = await supabaseClient.from('profiles').select('*').order('name');
+            const body = document.getElementById('userTableBody');
+            body.innerHTML = (data || []).map(p => {
+                const r = (p.role || 'usuario').toLowerCase();
+                const c = r === 'admin' ? 'bg-red-100 text-red-700' : r === 'supervisor' ? 'bg-slate-200 text-slate-700' : 'bg-slate-100 text-slate-600';
+                return `<tr class="hover:bg-slate-50 transition-colors"><td class="px-5 py-3 font-bold text-slate-800 text-xs uppercase">${p.name || 'S/N'}</td><td class="px-5 py-3 text-slate-500 text-[10px]">${p.email}</td><td class="px-5 py-3 text-right"><span class="px-2 py-1 rounded-md text-[9px] font-black uppercase ${c}">${r}</span></td></tr>`;
+            }).join('');
+            lucide.createIcons();
+        }
+
+        function handleDeleteUser(id, name) {
+            if (userProfile.role !== 'admin' && !userProfile.is_admin) return;
+            
+            showConfirmModal(
+                "Eliminar Usuario",
+                `¿Estás seguro de eliminar al usuario ${name}? Esta acción borrará su perfil en la aplicación.`,
+                async () => {
+                    setLoading(true);
+                    const { error } = await supabaseClient.from('profiles').delete().eq('id', id);
+                    if (error) showToast("Error: " + error.message, true);
+                    else { showToast("Usuario eliminado"); renderUsers(); }
+                    setLoading(false);
+                }
+            );
+        }
+
+        function setLoading(s) { document.getElementById('globalLoader').classList.toggle('hidden', !s); }
+        function showToast(m, e=false) {
+            const t = document.getElementById('toast'); document.getElementById('toastMsg').textContent = m;
+            t.className = `fixed bottom-24 md:bottom-8 right-4 md:right-8 ${e?'bg-red-600':'bg-slate-900'} text-white px-6 py-4 rounded-2xl shadow-2xl transition-all duration-300 z-[100] flex items-center gap-3 w-[calc(100%-2rem)] md:w-auto`;
+            t.style.transform = 'translateY(0)'; setTimeout(() => t.style.transform = 'translateY(150px)', 3000);
+        }
+
+        window.authorizeExit = authorizeExit;
+        window.handleDeleteExit = handleDeleteExit;
+        window.setViewMode = setViewMode;
+        window.changeDateOffset = changeDateOffset;
+        window.goToToday = goToToday;
+        window.startEditExit = startEditExit;
+        window.copyExitToForm = copyExitToForm;
+        window.cancelEditMode = cancelEditMode;
+        window.triggerHistorySearch = triggerHistorySearch;
+        window.showExitDetails = (id) => {
+            const e = exitsData.find(x => x.id === id); if(!e) return;
+            const isAuth = e.status.toUpperCase() === 'AUTORIZADO';
+            const statusClass = isAuth ? 'text-green-700 bg-green-100 border-green-200' : 'text-red-700 bg-red-100 border-red-200';
+            document.getElementById('detailsModalContent').innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex justify-between items-start"><div><label class="text-[9px] block font-black text-slate-400 uppercase tracking-widest">Responsable</label><span class="font-black text-slate-900 text-lg leading-tight uppercase">${e.name}</span></div><span class="text-[10px] font-black uppercase px-2 py-1 rounded-lg border ${statusClass}">${e.status}</span></div>
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-100"><label class="text-[9px] block font-black text-slate-400 uppercase tracking-widest mb-1">📅 Fecha</label><p class="text-sm font-bold text-slate-800">${e.date_str}</p></div>
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-100"><label class="text-[9px] block font-black text-slate-400 uppercase tracking-widest mb-1">📍 Destino</label><p class="text-sm font-bold text-slate-800">${e.place}</p></div>
+                    <div><label class="text-[9px] block font-black text-slate-400 uppercase tracking-widest mb-1">💼 Trabajo</label><p class="text-sm font-medium text-slate-700">${e.job}</p></div>
+                    <div><label class="text-[9px] block font-black text-slate-400 uppercase tracking-widest mb-1">👥 Acompañantes</label><p class="text-sm font-medium text-slate-700">${e.companion || 'Ninguno'}</p></div>
+                    <div><label class="text-[9px] block font-black text-slate-400 uppercase tracking-widest mb-1">🛠️ Materiales</label><p class="text-sm font-medium text-slate-700">${e.material || 'Ninguno'}</p></div>
+                    <div class="grid grid-cols-2 gap-4 pt-2 border-t border-slate-100">
+                        <div><label class="text-[9px] block font-black text-slate-400 uppercase tracking-widest">🚚 Equipo</label><p class="text-xs font-bold text-slate-800">${e.equipment || 'N/A'}</p></div>
+                        <div><label class="text-[9px] block font-black text-slate-400 uppercase tracking-widest">✍️ Firmado</label><p class="text-xs font-bold text-slate-800">${e.signed_by}</p></div>
+                    </div>
+                </div>`;
+            document.getElementById('detailsModal').classList.replace('hidden', 'flex'); lucide.createIcons();
+        };
+        window.closeExitDetails = () => document.getElementById('detailsModal').classList.replace('flex', 'hidden');
+
+        async function handleLogout() { setLoading(true); if(pollingTimer) clearInterval(pollingTimer); await supabaseClient.auth.signOut(); window.location.reload(); }
+
+        const loginForm = document.getElementById('loginForm');
+        if(loginForm) {
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault(); setLoading(true);
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPass').value;
+                const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+                if (error) { showToast("Error: " + error.message, true); setLoading(false); } else { await checkUser(); }
+            });
+        }
+
+        const userForm = document.getElementById('userForm');
+        if (userForm) {
+            userForm.addEventListener('submit', async (e) => {
+                e.preventDefault(); 
+                if (userProfile.role !== 'admin' && !userProfile.is_admin) { showToast("No tienes permisos", true); return; }
+                setLoading(true);
+                const name = document.getElementById('newUserName').value;
+                const email = document.getElementById('newUserEmail').value;
+                const password = document.getElementById('newUserPass').value;
+                const role = document.getElementById('newUserRole').value;
+
+                const { data: existingProfile } = await supabaseClient.from('profiles').select('id').eq('email', email).maybeSingle();
+
+                if (existingProfile) {
+                    const { error } = await supabaseClient.from('profiles').update({
+                        name: name,
+                        role: role,
+                        is_admin: role === 'admin'
+                    }).eq('id', existingProfile.id);
+
+                    if (error) showToast("Error al actualizar: " + error.message, true);
+                    else { showToast("Usuario actualizado correctamente"); userForm.reset(); renderUsers(); }
+                } else {
+                    const { data: authData, error: authError } = await supabaseClient.auth.signUp({ email: email, password: password });
+                    if (authError) { 
+                        if (authError.message.includes("already registered")) {
+                            showToast("Este correo ya existe. Actualice sus datos arriba.", true);
+                        } else {
+                            showToast("Error: " + authError.message, true); 
+                        }
+                    } else if (authData?.user) {
+                        const { error } = await supabaseClient.from('profiles').upsert([{ 
+                            id: authData.user.id, 
+                            name: name, 
+                            email: email, 
+                            role: role, 
+                            is_admin: role === 'admin' 
+                        }]);
+                        if (error) showToast("Error Perfil: " + error.message, true);
+                        else { showToast("Usuario registrado con éxito"); userForm.reset(); renderUsers(); }
+                    }
+                }
+                setLoading(false);
+            });
+        }
+
+        window.onload = () => {
+            checkUser();
+            setupTagInput('companionInput', 'companionTags', 'exitCompanion', companionTagsArray);
+            setupTagInput('materialInput', 'materialTags', 'exitMaterial', materialTagsArray);
+        };
+    </script>
+</body>
+</html>
