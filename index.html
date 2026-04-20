@@ -12,7 +12,7 @@
     <meta name="apple-mobile-web-app-title" content="Taller">
     <meta name="mobile-web-app-capable" content="yes">
     
-    <!-- Icono SVG integrado (Cuadro rojo con llave inglesa) -->
+    <!-- Icono SVG integrado -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22%23dc2626%22></rect><text x=%2250%22 y=%2268%22 font-size=%2250%22 text-anchor=%22middle%22 fill=%22white%22>🛠️</text></svg>">
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22%23dc2626%22></rect><text x=%2250%22 y=%2268%22 font-size=%2250%22 text-anchor=%22middle%22 fill=%22white%22>🛠️</text></svg>">
 
@@ -20,6 +20,15 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Chart.js para Gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- ChartDataLabels plugin para mostrar valores numéricos en gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <!-- SheetJS para Exportar Excel Real (.xlsx) -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <!-- html2pdf para Generar PDF Nativo -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap');
         
@@ -45,6 +54,7 @@
 
         .custom-scrollbar::-webkit-scrollbar {
             width: 4px;
+            height: 4px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
             background: #cbd5e1;
@@ -77,6 +87,50 @@
             align-items: center;
             gap: 4px;
             border: 1px solid #fecaca;
+        }
+
+        /* Estilos optimizados para imprimir PDF (Asegura que los colores se mantengan) */
+        #pdfContent {
+            background-color: #f8fafc;
+            padding: 10px;
+        }
+
+        /* Estilos en vivo para la exportación a PDF con html2pdf */
+        .pdf-export {
+            background-color: #ffffff !important;
+            padding: 0 !important;
+        }
+        .pdf-export .kpi-card {
+            padding: 0.75rem !important;
+        }
+        .pdf-export .kpi-value {
+            font-size: 1.5rem !important;
+        }
+        .pdf-export .chart-wrapper {
+            height: 180px !important; /* Comprime los gráficos para que quepan en 1 hoja */
+        }
+        .pdf-export .gap-4, .pdf-export .md\:gap-4 {
+            gap: 0.5rem !important;
+        }
+        .pdf-export .mb-6, .pdf-export .md\:mb-6 {
+            margin-bottom: 0.5rem !important;
+        }
+        .pdf-export .p-5, .pdf-export .md\:p-5 {
+            padding: 0.75rem !important;
+        }
+        .pdf-export .chart-title {
+            margin-bottom: 0.25rem !important;
+        }
+        
+        /* --- REGLAS ESTRICTAS PARA SALTO DE PÁGINA EN PDF --- */
+        .pdf-export #tableWrapper {
+            break-before: page !important;
+            page-break-before: always !important;
+            margin-top: 1rem !important;
+        }
+        .pdf-export tr {
+            break-inside: avoid !important;
+            page-break-inside: avoid !important;
         }
     </style>
 </head>
@@ -121,7 +175,7 @@
     <!-- Main Dashboard -->
     <div id="mainDashboard" class="hidden min-h-screen flex flex-col">
         
-        <header class="bg-white border-b border-slate-200 sticky top-0 z-40 px-4 py-3 md:px-6 md:py-4 shadow-sm">
+        <header class="bg-white border-b border-slate-200 sticky top-0 z-40 px-4 py-3 md:px-6 md:py-4 shadow-sm no-print">
             <div class="max-w-[1600px] mx-auto flex justify-between items-center">
                 <div class="flex items-center gap-3">
                     <div class="bg-red-600 p-2 rounded-xl shadow-sm">
@@ -131,10 +185,11 @@
                 </div>
                 
                 <div class="hidden md:flex items-center gap-2 bg-slate-50 p-1.5 rounded-2xl border border-slate-200">
-                    <button data-page="registerExit" onclick="showPage('registerExit')" class="nav-btn reg-link hidden px-5 py-2.5 rounded-xl text-sm font-bold transition-all text-slate-500 hover:bg-white hover:text-slate-900">Registrar</button>
-                    <button data-page="calendarView" onclick="showPage('calendarView')" class="nav-btn px-5 py-2.5 rounded-xl text-sm font-bold transition-all text-slate-500 hover:bg-white hover:text-slate-900">Historial</button>
-                    <button data-page="approvals" onclick="showPage('approvals')" class="nav-btn auth-link hidden px-5 py-2.5 rounded-xl text-sm font-bold transition-all text-slate-500 hover:bg-white hover:text-slate-900">Aprobaciones</button>
-                    <button data-page="adminUsers" onclick="showPage('adminUsers')" class="nav-btn admin-link hidden px-5 py-2.5 rounded-xl text-sm font-bold transition-all text-slate-500 hover:bg-white hover:text-slate-900">Usuarios</button>
+                    <button data-page="registerExit" onclick="showPage('registerExit')" class="nav-btn reg-link hidden px-4 py-2.5 rounded-xl text-sm font-bold transition-all text-slate-500 hover:bg-white hover:text-slate-900">Registrar</button>
+                    <button data-page="calendarView" onclick="showPage('calendarView')" class="nav-btn px-4 py-2.5 rounded-xl text-sm font-bold transition-all text-slate-500 hover:bg-white hover:text-slate-900">Historial</button>
+                    <button data-page="approvals" onclick="showPage('approvals')" class="nav-btn auth-link hidden px-4 py-2.5 rounded-xl text-sm font-bold transition-all text-slate-500 hover:bg-white hover:text-slate-900">Aprobaciones</button>
+                    <button data-page="reports" onclick="showPage('reports')" class="nav-btn px-4 py-2.5 rounded-xl text-sm font-bold transition-all text-slate-500 hover:bg-white hover:text-slate-900">Informe</button>
+                    <button data-page="adminUsers" onclick="showPage('adminUsers')" class="nav-btn admin-link hidden px-4 py-2.5 rounded-xl text-sm font-bold transition-all text-slate-500 hover:bg-white hover:text-slate-900">Usuarios</button>
                 </div>
 
                 <div class="flex items-center gap-3">
@@ -149,7 +204,7 @@
             </div>
         </header>
 
-        <main class="flex-grow p-2 md:p-8 max-w-[1600px] mx-auto w-full">
+        <main class="flex-grow p-2 md:p-6 max-w-[1600px] mx-auto w-full">
             
             <!-- Page: Register Exit -->
             <div id="page_registerExit" class="max-w-3xl mx-auto fade-in">
@@ -230,22 +285,21 @@
                             <p id="currentWeekRange" class="text-red-600 font-bold text-[11px] md:text-sm mt-0.5 uppercase tracking-wide"></p>
                         </div>
                         
-                        <!-- Search Box inside History -->
-                        <div class="relative group mt-2">
+                        <div class="relative group mt-2 no-print">
                             <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                                 <i data-lucide="search" class="w-4 h-4 text-slate-400 group-focus-within:text-red-500 transition-colors"></i>
                             </div>
                             <input type="text" id="historySearchInput" oninput="triggerHistorySearch(this.value)" placeholder="Buscar por nombre, destino, trabajo..." class="w-full md:w-80 pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-red-500/10 focus:border-red-500 outline-none transition-all text-sm font-medium">
                         </div>
 
-                        <div id="calendarControls" class="flex items-center gap-6 px-1 border-b-2 border-slate-100/60 mt-2 md:mt-4 transition-opacity">
+                        <div id="calendarControls" class="flex items-center gap-6 px-1 border-b-2 border-slate-100/60 mt-2 md:mt-4 transition-opacity no-print">
                             <button onclick="setViewMode('day')" id="tab_day" class="pb-2 text-sm transition-all text-red-800 font-bold border-b-2 border-red-800">Día</button>
                             <button onclick="setViewMode('week')" id="tab_week" class="pb-2 text-sm transition-all text-slate-500 font-medium hover:text-slate-800 border-b-2 border-transparent">Semana</button>
                             <button onclick="setViewMode('month')" id="tab_month" class="pb-2 text-sm transition-all text-slate-500 font-medium hover:text-slate-800 border-b-2 border-transparent uppercase">MES</button>
                         </div>
                     </div>
                     
-                    <div id="dateNavigation" class="flex items-center bg-slate-50 rounded-xl border border-slate-200 p-1 w-full md:w-auto justify-between md:justify-start transition-opacity">
+                    <div id="dateNavigation" class="flex items-center bg-slate-50 rounded-xl border border-slate-200 p-1 w-full md:w-auto justify-between md:justify-start transition-opacity no-print">
                         <button onclick="changeDateOffset(-1)" class="p-2.5 md:p-2 hover:bg-white rounded-lg transition-all active:scale-95"><i data-lucide="chevron-left" class="w-5 h-5 text-slate-600"></i></button>
                         <button onclick="goToToday()" class="px-6 py-2 text-xs md:text-sm font-black text-slate-700 hover:bg-white rounded-lg transition-all">HOY</button>
                         <button onclick="changeDateOffset(1)" class="p-2.5 md:p-2 hover:bg-white rounded-lg transition-all active:scale-95"><i data-lucide="chevron-right" class="w-5 h-5 text-slate-600"></i></button>
@@ -263,6 +317,136 @@
                     </h2>
                     <p class="text-[11px] md:text-sm text-slate-500 mb-4 md:mb-6">Revisa las salidas y autoriza las que correspondan. Toca para detalles.</p>
                     <div id="approvalsList" class="flex flex-col gap-3 md:gap-4"></div>
+                </div>
+            </div>
+
+            <!-- Page: Reports / Informe -->
+            <div id="page_reports" class="hidden space-y-4 md:space-y-6 fade-in max-w-[1600px] mx-auto">
+                
+                <!-- Controles de Filtros e Impresión -->
+                <div class="bg-white p-4 md:p-6 rounded-2xl md:rounded-[2rem] shadow-sm border border-slate-200 no-print flex flex-col lg:flex-row gap-4 justify-between items-start lg:items-end">
+                    <div class="w-full lg:flex-1 grid grid-cols-2 md:grid-cols-5 gap-3">
+                        <div class="col-span-2 md:col-span-1">
+                            <label class="text-[10px] font-bold text-slate-500 uppercase ml-1">Desde</label>
+                            <input type="date" id="repDateStart" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-red-500">
+                        </div>
+                        <div class="col-span-2 md:col-span-1">
+                            <label class="text-[10px] font-bold text-slate-500 uppercase ml-1">Hasta</label>
+                            <input type="date" id="repDateEnd" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-red-500">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-slate-500 uppercase ml-1">Estado</label>
+                            <select id="repStatus" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-red-500">
+                                <option value="">Todos</option>
+                                <option value="PENDIENTE">Pendientes</option>
+                                <option value="AUTORIZADO">Autorizados</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-slate-500 uppercase ml-1">Responsable</label>
+                            <select id="repOperator" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-red-500">
+                                <option value="">Todos</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-slate-500 uppercase ml-1">Actividad</label>
+                            <select id="repActivity" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-red-500">
+                                <option value="">Todas</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap md:flex-nowrap gap-2 w-full lg:w-auto mt-2 lg:mt-0">
+                        <button onclick="applyReportFilters()" class="flex-1 md:flex-none flex items-center justify-center gap-1.5 p-2 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition shadow text-xs px-4"><i data-lucide="search" class="w-4 h-4"></i> Cargar</button>
+                        <button onclick="clearReportFilters()" class="flex-1 md:flex-none flex items-center justify-center gap-1.5 p-2 bg-slate-200 text-slate-700 font-bold rounded-xl hover:bg-slate-300 transition shadow text-xs px-4"><i data-lucide="eraser" class="w-4 h-4"></i> Limpiar</button>
+                        <button onclick="exportToExcel()" class="flex-1 md:flex-none flex items-center justify-center gap-1.5 p-2 bg-green-600 text-white font-bold rounded-xl hover:bg-green-700 transition shadow text-xs px-4"><i data-lucide="file-spreadsheet" class="w-4 h-4"></i> Excel</button>
+                        <button onclick="exportToPDF()" class="flex-1 md:flex-none flex items-center justify-center gap-1.5 p-2 bg-red-600 text-white font-bold rounded-xl hover:bg-red-700 transition shadow-sm text-xs px-4"><i data-lucide="file-text" class="w-4 h-4"></i> PDF</button>
+                    </div>
+                </div>
+
+                <!-- CONTENEDOR PRINCIPAL PARA PDF -->
+                <div id="pdfContent" class="w-full">
+                    <div id="printHeader" class="hidden mb-6 text-center border-b-2 border-red-600 pb-2">
+                        <h2 class="font-black text-2xl md:text-3xl text-slate-800">REPORTE DE OPERACIONES TALLER</h2>
+                        <p id="printDateRange" class="text-sm font-bold text-slate-500 mt-1 uppercase tracking-widest"></p>
+                    </div>
+
+                    <!-- KPIs Cards -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-4 md:mb-6">
+                        <div class="kpi-card bg-white p-4 md:p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                            <div>
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Registros</p>
+                                <p id="kpiTotal" class="kpi-value text-2xl md:text-3xl font-black text-slate-800 leading-none mt-1">0</p>
+                            </div>
+                            <div class="bg-blue-50 p-3 rounded-xl text-blue-600"><i data-lucide="file-text" class="w-5 h-5 md:w-6 md:h-6"></i></div>
+                        </div>
+                        <div class="kpi-card bg-white p-4 md:p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                            <div>
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Autorizados</p>
+                                <p id="kpiAuth" class="kpi-value text-2xl md:text-3xl font-black text-green-600 leading-none mt-1">0</p>
+                            </div>
+                            <div class="bg-green-50 p-3 rounded-xl text-green-600"><i data-lucide="check-circle" class="w-5 h-5 md:w-6 md:h-6"></i></div>
+                        </div>
+                        <div class="kpi-card bg-white p-4 md:p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                            <div>
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Pendientes</p>
+                                <p id="kpiPending" class="kpi-value text-2xl md:text-3xl font-black text-red-600 leading-none mt-1">0</p>
+                            </div>
+                            <div class="bg-red-50 p-3 rounded-xl text-red-600"><i data-lucide="alert-triangle" class="w-5 h-5 md:w-6 md:h-6"></i></div>
+                        </div>
+                        <div class="kpi-card bg-white p-4 md:p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                            <div>
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Equipos en Uso</p>
+                                <p id="kpiEquip" class="kpi-value text-2xl md:text-3xl font-black text-amber-600 leading-none mt-1">0</p>
+                            </div>
+                            <div class="bg-amber-50 p-3 rounded-xl text-amber-600"><i data-lucide="truck" class="w-5 h-5 md:w-6 md:h-6"></i></div>
+                        </div>
+                    </div>
+
+                    <!-- Gráficos -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 md:mb-6">
+                        <div class="bg-white p-4 md:p-5 rounded-2xl border border-slate-200 shadow-sm md:col-span-1">
+                            <h3 class="chart-title text-xs font-black text-slate-500 uppercase tracking-widest mb-4">Estado de Operaciones</h3>
+                            <div class="chart-wrapper relative h-48 md:h-64 w-full flex items-center justify-center">
+                                <canvas id="chartStatus"></canvas>
+                            </div>
+                        </div>
+                        <div class="bg-white p-4 md:p-5 rounded-2xl border border-slate-200 shadow-sm md:col-span-2">
+                            <h3 class="chart-title text-xs font-black text-slate-500 uppercase tracking-widest mb-4">Top Actividades Realizadas</h3>
+                            <div class="chart-wrapper relative h-48 md:h-64 w-full">
+                                <canvas id="chartActivity"></canvas>
+                            </div>
+                        </div>
+                        <div class="bg-white p-4 md:p-5 rounded-2xl border border-slate-200 shadow-sm md:col-span-3">
+                            <h3 class="chart-title text-xs font-black text-slate-500 uppercase tracking-widest mb-4">Concentración por Destino / Ubicación</h3>
+                            <div class="chart-wrapper relative h-48 md:h-64 w-full">
+                                <canvas id="chartLocation"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabla de Datos -->
+                    <div id="tableWrapper" class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                        <div class="p-4 border-b border-slate-100 bg-slate-50">
+                            <h3 class="font-black text-slate-800 text-sm md:text-base uppercase tracking-tight">Registro Detallado</h3>
+                        </div>
+                        <div id="reportTableContainer" class="overflow-x-auto custom-scrollbar">
+                            <table class="w-full text-left whitespace-nowrap">
+                                <thead class="bg-slate-50 border-b border-slate-100">
+                                    <tr>
+                                        <th class="px-4 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">Fecha/Hora</th>
+                                        <th class="px-4 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">Personal</th>
+                                        <th class="px-4 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">Ubicación</th>
+                                        <th class="px-4 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">Actividad</th>
+                                        <th class="px-4 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">Equipo/Placa</th>
+                                        <th class="px-4 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="reportTableBody" class="divide-y divide-slate-100 text-xs md:text-sm font-medium text-slate-700">
+                                    <!-- Llenado por JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -325,7 +509,7 @@
     </div>
 
     <!-- Modal Detalles -->
-    <div id="detailsModal" class="fixed inset-0 z-[110] hidden items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm fade-in">
+    <div id="detailsModal" class="fixed inset-0 z-[110] hidden items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm fade-in no-print">
         <div class="bg-white w-full max-w-md rounded-[2rem] shadow-2xl overflow-hidden flex flex-col transform transition-all">
             <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
                 <div class="flex items-center gap-2">
@@ -342,7 +526,7 @@
     </div>
 
     <!-- Modal Confirmación Personalizado -->
-    <div id="confirmModal" class="fixed inset-0 z-[120] hidden items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm fade-in">
+    <div id="confirmModal" class="fixed inset-0 z-[120] hidden items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm fade-in no-print">
         <div class="bg-white w-full max-w-sm rounded-[2rem] shadow-2xl p-6 flex flex-col items-center text-center transform transition-all">
             <div class="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mb-4">
                 <i data-lucide="alert-triangle" class="w-8 h-8"></i>
@@ -357,7 +541,7 @@
     </div>
 
     <!-- Modal Alerta Personalizado -->
-    <div id="alertModal" class="fixed inset-0 z-[120] hidden items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm fade-in">
+    <div id="alertModal" class="fixed inset-0 z-[120] hidden items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm fade-in no-print">
         <div class="bg-white w-full max-w-sm rounded-[2rem] shadow-2xl p-6 flex flex-col items-center text-center transform transition-all">
             <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mb-4">
                 <i data-lucide="info" class="w-8 h-8"></i>
@@ -369,7 +553,7 @@
     </div>
 
     <!-- Mobile Navigation -->
-    <nav class="md:hidden fixed bottom-0 inset-x-0 bg-white border-t border-slate-200 pb-safe z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+    <nav class="md:hidden fixed bottom-0 inset-x-0 bg-white border-t border-slate-200 pb-safe z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] no-print">
         <div class="flex justify-around items-center p-2">
             <button data-page="registerExit" onclick="showPage('registerExit')" class="nav-btn reg-link hidden flex flex-col items-center justify-center p-2 min-w-[70px] rounded-2xl transition-all text-slate-400">
                 <i data-lucide="plus-circle" class="w-5 h-5 mb-1"></i><span class="text-[10px] font-bold">Nuevo</span>
@@ -380,13 +564,17 @@
             <button data-page="approvals" onclick="showPage('approvals')" class="nav-btn auth-link mobile-nav hidden flex flex-col items-center justify-center p-2 min-w-[70px] rounded-2xl transition-all text-slate-400">
                 <i data-lucide="check-circle" class="w-5 h-5 mb-1"></i><span class="text-[10px] font-bold">Aprobar</span>
             </button>
+            <!-- Informe Movil -->
+            <button data-page="reports" onclick="showPage('reports')" class="nav-btn mobile-nav flex flex-col items-center justify-center p-2 min-w-[70px] rounded-2xl transition-all text-slate-400">
+                <i data-lucide="pie-chart" class="w-5 h-5 mb-1"></i><span class="text-[10px] font-bold">Informe</span>
+            </button>
             <button data-page="adminUsers" onclick="showPage('adminUsers')" class="nav-btn admin-link mobile-nav hidden flex flex-col items-center justify-center p-2 min-w-[70px] rounded-2xl transition-all text-slate-400">
                 <i data-lucide="shield" class="w-5 h-5 mb-1"></i><span class="text-[10px] font-bold">Admin</span>
             </button>
         </div>
     </nav>
 
-    <div id="toast" class="fixed bottom-24 md:bottom-8 right-4 md:right-8 bg-slate-900 text-white px-4 py-3 md:px-6 md:py-4 rounded-2xl shadow-2xl transform translate-y-32 transition-all duration-300 z-[100] flex items-center gap-3 w-[calc(100%-2rem)] md:w-auto">
+    <div id="toast" class="fixed bottom-24 md:bottom-8 right-4 md:right-8 bg-slate-900 text-white px-4 py-3 md:px-6 md:py-4 rounded-2xl shadow-2xl transform translate-y-32 transition-all duration-300 z-[100] flex items-center gap-3 w-[calc(100%-2rem)] md:w-auto no-print">
         <span id="toastMsg" class="font-bold text-sm"></span>
     </div>
 
@@ -404,7 +592,12 @@
         let editingExitId = null;
         let activeSearchTerm = "";
         let pollingTimer = null;
-        let confirmAction = null; // Variable para guardar la acción de confirmación
+        let confirmAction = null; 
+
+        // Gráficos Globales
+        let chartInstanceStatus = null;
+        let chartInstanceActivity = null;
+        let chartInstanceLocation = null;
 
         const loader = document.getElementById('globalLoader');
 
@@ -480,7 +673,10 @@
                 document.querySelectorAll('.reg-link').forEach(el => el.classList.remove('hidden'));
             }
 
+            // Defaults
             document.getElementById('exitDate').valueAsDate = new Date();
+            document.getElementById('repDateStart').valueAsDate = new Date();
+            document.getElementById('repDateEnd').valueAsDate = new Date();
 
             await fetchExits();
             currentDateAnchor = new Date();
@@ -505,6 +701,7 @@
                 updateDatalists();
                 if (!document.getElementById('page_calendarView').classList.contains('hidden')) renderCalendar();
                 if (!document.getElementById('page_approvals').classList.contains('hidden')) renderApprovals();
+                if (!document.getElementById('page_reports').classList.contains('hidden')) applyReportFilters();
             }
             if(!isSilent) setLoading(false);
         }
@@ -515,10 +712,24 @@
                 const dl = document.getElementById(id);
                 if (dl) dl.innerHTML = list.map(v => `<option value="${v}">`).join('');
             };
-            fill('namesList', unique('name'));
+            const fillSelect = (id, list) => {
+                const sl = document.getElementById(id);
+                if (sl) {
+                    sl.innerHTML = `<option value="">Todos</option>` + list.map(v => `<option value="${v}">${v}</option>`).join('');
+                }
+            };
+
+            const names = unique('name');
+            const jobs = unique('job');
+            
+            fill('namesList', names);
             fill('placesList', unique('place'));
             fill('equipmentsList', unique('equipment'));
-            fill('jobsList', unique('job'));
+            fill('jobsList', jobs);
+            
+            fillSelect('repOperator', names);
+            fillSelect('repActivity', jobs);
+
             const extractList = (key) => {
                 let all = [];
                 exitsData.forEach(e => { if(e[key]) all.push(...e[key].split(',').map(s => s.trim())); });
@@ -527,6 +738,233 @@
             fill('companionsList', extractList('companion'));
             fill('materialsList', extractList('material'));
         }
+
+        // ---------- LÓGICA DE INFORMES, EXCEL (.xlsx) Y PDF NATIVO ----------
+        function applyReportFilters() {
+            const startStr = document.getElementById('repDateStart').value;
+            const endStr = document.getElementById('repDateEnd').value;
+            const status = document.getElementById('repStatus').value;
+            const operator = document.getElementById('repOperator').value;
+            const activity = document.getElementById('repActivity').value;
+
+            let filtered = exitsData;
+
+            if (startStr && endStr) {
+                filtered = filtered.filter(e => e.date_str >= startStr && e.date_str <= endStr);
+            }
+            if (status) filtered = filtered.filter(e => e.status.toUpperCase() === status.toUpperCase());
+            if (operator) filtered = filtered.filter(e => e.name === operator);
+            if (activity) filtered = filtered.filter(e => e.job === activity);
+
+            updateReportKPIs(filtered);
+            updateReportCharts(filtered);
+            updateReportTable(filtered);
+        }
+
+        function updateReportKPIs(data) {
+            const total = data.length;
+            const auth = data.filter(e => e.status.toUpperCase() === 'AUTORIZADO').length;
+            const pend = data.filter(e => e.status.toUpperCase() === 'PENDIENTE').length;
+            const uniqueEquips = new Set(data.map(e => e.equipment).filter(Boolean)).size;
+
+            document.getElementById('kpiTotal').textContent = total;
+            document.getElementById('kpiAuth').textContent = auth;
+            document.getElementById('kpiPending').textContent = pend;
+            document.getElementById('kpiEquip').textContent = uniqueEquips;
+        }
+
+        function updateReportCharts(data) {
+            Chart.defaults.font.family = "'Inter', sans-serif";
+            // Registrar el plugin de etiquetas de datos
+            Chart.register(ChartDataLabels);
+            
+            const auth = data.filter(e => e.status.toUpperCase() === 'AUTORIZADO').length;
+            const pend = data.filter(e => e.status.toUpperCase() === 'PENDIENTE').length;
+            
+            if(chartInstanceStatus) chartInstanceStatus.destroy();
+            chartInstanceStatus = new Chart(document.getElementById('chartStatus'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Autorizados', 'Pendientes'],
+                    datasets: [{ data: [auth, pend], backgroundColor: ['#16a34a', '#dc2626'], borderWidth: 0 }]
+                },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    plugins: { 
+                        legend: { position: 'bottom' },
+                        datalabels: { color: '#fff', font: { weight: 'bold', size: 16 } }
+                    }, 
+                    cutout: '70%', 
+                    animation: false 
+                }
+            });
+
+            const countFreq = (arr) => arr.reduce((acc, curr) => { acc[curr] = (acc[curr] || 0) + 1; return acc; }, {});
+
+            const jobs = countFreq(data.map(e => e.job).filter(Boolean));
+            const sortedJobs = Object.entries(jobs).sort((a,b)=>b[1]-a[1]).slice(0, 5); 
+            
+            if(chartInstanceActivity) chartInstanceActivity.destroy();
+            chartInstanceActivity = new Chart(document.getElementById('chartActivity'), {
+                type: 'bar',
+                data: {
+                    labels: sortedJobs.map(j => j[0]),
+                    datasets: [{ label: 'Operaciones', data: sortedJobs.map(j => j[1]), backgroundColor: '#3b82f6', borderRadius: 6 }]
+                },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    plugins: { 
+                        legend: { display: false },
+                        datalabels: { color: '#fff', anchor: 'end', align: 'bottom', font: { weight: 'bold', size: 14 } }
+                    }, 
+                    animation: false, 
+                    scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } 
+                }
+            });
+
+            const places = countFreq(data.map(e => e.place).filter(Boolean));
+            const sortedPlaces = Object.entries(places).sort((a,b)=>b[1]-a[1]).slice(0, 5); 
+            
+            if(chartInstanceLocation) chartInstanceLocation.destroy();
+            chartInstanceLocation = new Chart(document.getElementById('chartLocation'), {
+                type: 'bar',
+                data: {
+                    labels: sortedPlaces.map(p => p[0]),
+                    datasets: [{ label: 'Frecuencia', data: sortedPlaces.map(p => p[1]), backgroundColor: '#f59e0b', borderRadius: 6 }]
+                },
+                options: { 
+                    indexAxis: 'y', 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    plugins: { 
+                        legend: { display: false },
+                        datalabels: { color: '#fff', anchor: 'end', align: 'left', font: { weight: 'bold', size: 14 } }
+                    }, 
+                    animation: false, 
+                    scales: { x: { beginAtZero: true, ticks: { precision: 0 } } } 
+                }
+            });
+        }
+
+        function updateReportTable(data) {
+            const tbody = document.getElementById('reportTableBody');
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="px-4 py-8 text-center text-slate-400">No hay datos para los filtros seleccionados.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = data.map(e => {
+                const c = e.status.toUpperCase() === 'AUTORIZADO' ? 'text-green-600 bg-green-50' : 'text-red-600 bg-red-50';
+                return `
+                <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="px-4 py-3"><span class="block text-slate-800">${e.date_str}</span><span class="text-[10px] text-slate-400 uppercase tracking-tighter">${e.time_str}</span></td>
+                    <td class="px-4 py-3 uppercase tracking-tight">${e.name}</td>
+                    <td class="px-4 py-3 truncate max-w-[150px]">${e.place}</td>
+                    <td class="px-4 py-3 truncate max-w-[150px]">${e.job}</td>
+                    <td class="px-4 py-3 font-bold">${e.equipment || 'S/N'}</td>
+                    <td class="px-4 py-3"><span class="px-2 py-1 rounded-md text-[9px] font-black uppercase ${c}">${e.status}</span></td>
+                </tr>`;
+            }).join('');
+        }
+
+        // Exportar a archivo XLSX de Excel Real
+        function exportToExcel() {
+            const startStr = document.getElementById('repDateStart').value;
+            const endStr = document.getElementById('repDateEnd').value;
+            const status = document.getElementById('repStatus').value;
+            const operator = document.getElementById('repOperator').value;
+            const activity = document.getElementById('repActivity').value;
+
+            let filtered = exitsData;
+            if (startStr && endStr) filtered = filtered.filter(e => e.date_str >= startStr && e.date_str <= endStr);
+            if (status) filtered = filtered.filter(e => e.status.toUpperCase() === status.toUpperCase());
+            if (operator) filtered = filtered.filter(e => e.name === operator);
+            if (activity) filtered = filtered.filter(e => e.job === activity);
+
+            if(filtered.length === 0) return showToast("No hay datos para exportar", true);
+
+            // Mapear datos a un array de objetos para SheetJS
+            const dataToExport = filtered.map(e => ({
+                'Fecha': e.date_str,
+                'Hora': e.time_str,
+                'Responsable': e.name,
+                'Destino': e.place,
+                'Actividad': e.job,
+                'Acompañantes': e.companion || 'Ninguno',
+                'Materiales': e.material || 'Ninguno',
+                'Equipo / Placa': e.equipment || 'N/A',
+                'Estado': e.status.toUpperCase(),
+                'Aprobado Por': e.signed_by
+            }));
+
+            // Crear el libro de trabajo y la hoja
+            const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Reporte Salidas");
+
+            // Configurar anchura de columnas básica
+            const wscols = [ {wch:12}, {wch:10}, {wch:25}, {wch:25}, {wch:25}, {wch:30}, {wch:30}, {wch:15}, {wch:15}, {wch:25} ];
+            worksheet['!cols'] = wscols;
+
+            // Descargar el archivo XLSX
+            XLSX.writeFile(workbook, `Reporte_Salidas_${new Date().toISOString().split('T')[0]}.xlsx`);
+            showToast("Excel descargado exitosamente");
+        }
+
+        // Exportar a PDF mediante captura HTML (Resuelve problemas de impresión nativa)
+        function exportToPDF() {
+            setLoading(true);
+            const element = document.getElementById('pdfContent');
+            const tableContainer = document.getElementById('reportTableContainer');
+            const headerTitle = document.getElementById('printHeader');
+            const printDateRange = document.getElementById('printDateRange');
+            
+            // Configurar el texto de las fechas para el PDF
+            const startStr = document.getElementById('repDateStart').value;
+            const endStr = document.getElementById('repDateEnd').value;
+            if (startStr && endStr) {
+                printDateRange.textContent = `PERIODO: ${startStr} AL ${endStr}`;
+            } else if (startStr) {
+                printDateRange.textContent = `DESDE: ${startStr}`;
+            } else if (endStr) {
+                printDateRange.textContent = `HASTA: ${endStr}`;
+            } else {
+                printDateRange.textContent = `HISTORIAL COMPLETO`;
+            }
+            
+            // Preparar UI para la captura
+            headerTitle.classList.remove('hidden');
+            tableContainer.classList.remove('overflow-x-auto'); // Para que la tabla no se corte horizontalmente
+            element.classList.add('pdf-export'); // Activa las reglas CSS para PDF
+
+            const opt = {
+                margin:       [0.4, 0.3, 0.4, 0.3], // top, right, bottom, left
+                filename:     `Reporte_Operaciones_${new Date().toISOString().split('T')[0]}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'in', format: 'letter', orientation: 'landscape' },
+                pagebreak:    { mode: ['css', 'legacy'], before: '#tableWrapper', avoid: 'tr' } // Fuerza salto antes de tabla y evita cortar filas
+            };
+
+            // Generar PDF
+            html2pdf().set(opt).from(element).save().then(() => {
+                // Restaurar UI a la normalidad
+                headerTitle.classList.add('hidden');
+                tableContainer.classList.add('overflow-x-auto');
+                element.classList.remove('pdf-export');
+                setLoading(false);
+                showToast("PDF generado y descargado");
+            }).catch(err => {
+                console.error("Error al generar PDF:", err);
+                headerTitle.classList.add('hidden');
+                tableContainer.classList.add('overflow-x-auto');
+                element.classList.remove('pdf-export');
+                setLoading(false);
+                showToast("Hubo un error al crear el PDF", true);
+            });
+        }
+        // ---------------------------------------------------
 
         function setupTagInput(inputId, containerId, hiddenId, listRef) {
             const input = document.getElementById(inputId);
@@ -549,7 +987,7 @@
             };
             input.onkeydown = (e) => { if (e.key === 'Enter' || e.keyCode === 13) { e.preventDefault(); addCurrentValue(); } };
             input.oninput = () => { if (input.value.includes(',')) addCurrentValue(); };
-            input.onblur = () => { addCurrentValue(); }; // Solución para móviles: agrega al tocar fuera del campo
+            input.onblur = () => { addCurrentValue(); };
             renderTags();
         }
 
@@ -784,19 +1222,13 @@
                 "¿Estás seguro de eliminar permanentemente este registro?",
                 async () => {
                     setLoading(true);
-                    
-                    // Auto-detectar si el ID es numérico o un UUID
                     const targetId = isNaN(id) ? id : Number(id);
 
-                    const { error } = await supabaseClient
-                        .from('exits')
-                        .delete()
-                        .eq('id', targetId);
+                    const { error } = await supabaseClient.from('exits').delete().eq('id', targetId);
                         
                     if(error) {
                         showToast("Error al eliminar: " + error.message, true);
                     } else {
-                        // Verificar si realmente se borró de la DB (Para detectar bloqueos silenciosos de RLS)
                         const { data: verifyData } = await supabaseClient.from('exits').select('id').eq('id', targetId);
                         
                         if (verifyData && verifyData.length > 0) {
@@ -858,6 +1290,7 @@
             if (id === 'calendarView') renderCalendar();
             if (id === 'approvals') renderApprovals();
             if (id === 'adminUsers') renderUsers();
+            if (id === 'reports') applyReportFilters();
         }
 
         async function renderUsers() {
@@ -871,26 +1304,25 @@
             lucide.createIcons();
         }
 
-        function handleDeleteUser(id, name) {
-            if (userProfile.role !== 'admin' && !userProfile.is_admin) return;
-            
-            showConfirmModal(
-                "Eliminar Usuario",
-                `¿Estás seguro de eliminar al usuario ${name}? Esta acción borrará su perfil en la aplicación.`,
-                async () => {
-                    setLoading(true);
-                    const { error } = await supabaseClient.from('profiles').delete().eq('id', id);
-                    if (error) showToast("Error: " + error.message, true);
-                    else { showToast("Usuario eliminado"); renderUsers(); }
-                    setLoading(false);
-                }
-            );
-        }
+        window.exportToExcel = exportToExcel;
+        window.exportToPDF = exportToPDF;
+        window.applyReportFilters = applyReportFilters;
+
+        // NUEVA FUNCIÓN PARA LIMPIAR FILTROS
+        window.clearReportFilters = () => {
+            document.getElementById('repDateStart').value = '';
+            document.getElementById('repDateEnd').value = '';
+            document.getElementById('repStatus').value = '';
+            document.getElementById('repOperator').value = '';
+            document.getElementById('repActivity').value = '';
+            applyReportFilters();
+            showToast("Filtros eliminados");
+        };
 
         function setLoading(s) { document.getElementById('globalLoader').classList.toggle('hidden', !s); }
         function showToast(m, e=false) {
             const t = document.getElementById('toast'); document.getElementById('toastMsg').textContent = m;
-            t.className = `fixed bottom-24 md:bottom-8 right-4 md:right-8 ${e?'bg-red-600':'bg-slate-900'} text-white px-6 py-4 rounded-2xl shadow-2xl transition-all duration-300 z-[100] flex items-center gap-3 w-[calc(100%-2rem)] md:w-auto`;
+            t.className = `fixed bottom-24 md:bottom-8 right-4 md:right-8 ${e?'bg-red-600':'bg-slate-900'} text-white px-6 py-4 rounded-2xl shadow-2xl transition-all duration-300 z-[100] flex items-center gap-3 w-[calc(100%-2rem)] md:w-auto no-print`;
             t.style.transform = 'translateY(0)'; setTimeout(() => t.style.transform = 'translateY(150px)', 3000);
         }
 
