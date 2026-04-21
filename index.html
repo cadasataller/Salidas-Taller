@@ -159,7 +159,6 @@
                     <button data-page="adminUsers" onclick="showPage('adminUsers')" class="nav-btn admin-link hidden px-4 py-2.5 rounded-xl text-sm font-bold transition-all text-slate-500 hover:bg-white hover:text-slate-900">Usuarios</button>
                 </div>
 
-                <!-- Modificación: Sistema de Campanita In-App Desplegable -->
                 <div class="flex items-center gap-1 md:gap-3 shrink-0">
                     <div class="text-right flex flex-col justify-center mr-1 md:mr-0">
                         <p id="userNameDisplay" class="text-[11px] md:text-sm font-bold text-slate-900 leading-none truncate max-w-[90px] md:max-w-none">Cargando...</p>
@@ -206,7 +205,7 @@
                             </div>
                         </div>
                         <button id="btnCancelEdit" onclick="cancelEditMode()" class="hidden text-red-500 font-bold text-xs flex items-center gap-1 hover:underline">
-                            <i data-lucide="x-circle" class="w-4 h-4"></i> Cancelar Edición
+                            <i data-lucide="x-circle" class="w-4 h-4"></i> Cancelar
                         </button>
                     </div>
 
@@ -217,34 +216,34 @@
                         </div>
                         <div class="space-y-1">
                             <label class="flex items-center gap-1.5 text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider ml-1"><i data-lucide="user" class="w-4 h-4 text-slate-400"></i> Responsable</label>
-                            <input type="text" id="exitName" list="namesList" required class="w-full p-2.5 md:p-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500 outline-none transition-all text-sm font-medium">
+                            <input type="text" id="exitName" list="namesList" required class="w-full p-2.5 md:p-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500 outline-none transition-all text-sm font-medium uppercase">
                             <datalist id="namesList"></datalist>
                         </div>
                         <div class="space-y-1">
                             <label class="flex items-center gap-1.5 text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider ml-1"><i data-lucide="map-pin" class="w-4 h-4 text-slate-400"></i> Destino</label>
-                            <input type="text" id="exitPlace" list="placesList" required class="w-full p-2.5 md:p-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500 outline-none transition-all text-sm font-medium">
+                            <input type="text" id="exitPlace" list="placesList" required class="w-full p-2.5 md:p-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500 outline-none transition-all text-sm font-medium uppercase">
                             <datalist id="placesList"></datalist>
                         </div>
                         <div class="space-y-1">
                             <label class="flex items-center gap-1.5 text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider ml-1"><i data-lucide="users" class="w-4 h-4 text-slate-400"></i> Acompañante (Enter o Coma para agregar)</label>
-                            <input type="text" id="companionInput" list="companionsList" class="w-full p-2.5 md:p-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500 outline-none transition-all text-sm font-medium" placeholder="Escribir...">
+                            <input type="text" id="companionInput" list="companionsList" class="w-full p-2.5 md:p-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500 outline-none transition-all text-sm font-medium uppercase" placeholder="Escribir...">
                             <datalist id="companionsList"></datalist>
                             <div id="companionTags" class="tag-container"></div>
                             <input type="hidden" id="exitCompanion">
                         </div>
                         <div class="space-y-1">
                             <label class="flex items-center gap-1.5 text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider ml-1"><i data-lucide="truck" class="w-4 h-4 text-slate-400"></i> Vehículo / Equipo</label>
-                            <input type="text" id="exitEquipment" list="equipmentsList" class="w-full p-2.5 md:p-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500 outline-none transition-all text-sm font-medium">
+                            <input type="text" id="exitEquipment" list="equipmentsList" class="w-full p-2.5 md:p-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500 outline-none transition-all text-sm font-medium uppercase">
                             <datalist id="equipmentsList"></datalist>
                         </div>
                         <div class="md:col-span-2 space-y-1">
                             <label class="flex items-center gap-1.5 text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider ml-1"><i data-lucide="briefcase" class="w-4 h-4 text-slate-400"></i> Trabajo a realizar</label>
-                            <input type="text" id="exitJob" list="jobsList" required class="w-full p-2.5 md:p-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500 outline-none transition-all text-sm font-medium">
+                            <input type="text" id="exitJob" list="jobsList" required class="w-full p-2.5 md:p-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500 outline-none transition-all text-sm font-medium uppercase">
                             <datalist id="jobsList"></datalist>
                         </div>
                         <div class="md:col-span-2 space-y-1">
                             <label class="flex items-center gap-1.5 text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider ml-1"><i data-lucide="wrench" class="w-4 h-4 text-slate-400"></i> Material (Enter o Coma para agregar)</label>
-                            <input type="text" id="materialInput" list="materialsList" class="w-full p-2.5 md:p-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500 outline-none transition-all text-sm font-medium" placeholder="Escribir...">
+                            <input type="text" id="materialInput" list="materialsList" class="w-full p-2.5 md:p-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500 outline-none transition-all text-sm font-medium uppercase" placeholder="Escribir...">
                             <datalist id="materialsList"></datalist>
                             <div id="materialTags" class="tag-container"></div>
                             <input type="hidden" id="exitMaterial">
@@ -634,6 +633,7 @@
         const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6d3NlZmxpcWZmbHFqeGJydmlqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYyNzY4MzcsImV4cCI6MjA5MTg1MjgzN30.lJZDMgRqjdPfRiDW8wAe0VLqXCJ94x4Asf33dNVnaMM";
         const supabaseClient = window.supabase.createClient(SB_URL, SB_KEY);
 
+        // State Variables
         let userProfile = null;
         let exitsData = [];
         let currentViewMode = 'day';
@@ -641,6 +641,8 @@
         let companionTagsArray = [];
         let materialTagsArray = [];
         let editingExitId = null;
+        let sourceExitId = null;
+        let highlightedExitId = null;
         let activeSearchTerm = "";
         let pollingTimer = null;
         let confirmAction = null; 
@@ -651,34 +653,31 @@
 
         const loader = document.getElementById('globalLoader');
 
-        // --- SISTEMA DE NOTIFICACIONES IN-APP (CON MEMORIA DE VISTOS) ---
         let isDropdownOpen = false;
         let lastKnownFirstId = null;
 
-        // Leer del navegador las notificaciones que ya borraste
+        // Notification Functions
         function getClearedNotifications() {
             const stored = localStorage.getItem(`clearedNotifs_${userProfile?.id || 'guest'}`);
             return stored ? JSON.parse(stored) : [];
         }
-
-        // Marcar una notificación como borrada/vista
+        
         function markNotificationAsCleared(id) {
             const cleared = getClearedNotifications();
             if (!cleared.includes(id)) {
                 cleared.push(id);
-                if (cleared.length > 50) cleared.shift(); // Solo guardamos historial de los últimos 50 borrados
+                if (cleared.length > 50) cleared.shift();
                 localStorage.setItem(`clearedNotifs_${userProfile?.id || 'guest'}`, JSON.stringify(cleared));
             }
         }
-
+        
         window.toggleNotifications = () => {
             const dropdown = document.getElementById('notifDropdown');
             isDropdownOpen = !isDropdownOpen;
             dropdown.classList.toggle('hidden', !isDropdownOpen);
             dropdown.classList.toggle('flex', isDropdownOpen);
         };
-
-        // Cerrar dropdown al hacer clic fuera de él
+        
         document.addEventListener('click', (e) => {
             const bellBtn = document.getElementById('bellBtn');
             const dropdown = document.getElementById('notifDropdown');
@@ -686,13 +685,11 @@
                 window.toggleNotifications();
             }
         });
-
-        // Dibuja los últimos 3 registros NO LEÍDOS en la campanita
+        
         function renderNotifications() {
             const list = document.getElementById('notifList');
             const cleared = getClearedNotifications();
             
-            // Filtramos: Que no sean míos y que NO estén en la lista de borrados
             const unreadExits = exitsData.filter(e => e.user_id !== userProfile?.id && !cleared.includes(e.id));
             const top3 = unreadExits.slice(0, 3);
             
@@ -703,7 +700,6 @@
                 return;
             }
 
-            // Si hay no leídos, prender el punto rojo de la campanita
             document.getElementById('notifBadge').classList.remove('hidden');
             document.getElementById('bellBtn').classList.add('text-red-600');
 
@@ -725,24 +721,22 @@
             `).join('');
             lucide.createIcons();
         }
-
-        // Borra la notificación con el botón de "Check" sin abrirla
+        
         window.dismissNotification = (e, id) => {
             e.stopPropagation();
             markNotificationAsCleared(id);
             renderNotifications();
         };
-
-        // Redirige al registro al hacer clic en la notificación (y la marca como leída)
+        
         window.openNotification = (id) => {
             markNotificationAsCleared(id);
-            renderNotifications(); // La borramos de la campanita al abrirla
-            window.toggleNotifications(); // Cerrar menú
-            showPage('calendarView'); // Ir al historial
-            window.showExitDetails(id); // Abrir ventana flotante del registro
+            renderNotifications();
+            window.toggleNotifications();
+            showPage('calendarView');
+            window.showExitDetails(id);
         };
-        // ----------------------------------------
 
+        // Modal Functions
         function showConfirmModal(title, message, action) {
             document.getElementById('confirmTitle').textContent = title;
             document.getElementById('confirmMessage').textContent = message;
@@ -750,28 +744,28 @@
             document.getElementById('confirmModal').classList.replace('hidden', 'flex');
             lucide.createIcons();
         }
-
+        
         function closeConfirmModal() {
             document.getElementById('confirmModal').classList.replace('flex', 'hidden');
             confirmAction = null;
         }
-
+        
         document.getElementById('confirmBtn').addEventListener('click', () => {
             if (confirmAction) confirmAction();
             closeConfirmModal();
         });
-
+        
         function showAlertModal(title, message) {
             document.getElementById('alertTitle').textContent = title;
             document.getElementById('alertMessage').textContent = message;
             document.getElementById('alertModal').classList.replace('hidden', 'flex');
             lucide.createIcons();
         }
-
+        
         function closeAlertModal() {
             document.getElementById('alertModal').classList.replace('flex', 'hidden');
         }
-
+        
         window.togglePassword = (inputId, iconId) => {
             const input = document.getElementById(inputId);
             const icon = document.getElementById(iconId);
@@ -785,6 +779,7 @@
             lucide.createIcons();
         };
 
+        // Auth & Init
         async function checkUser() {
             const { data: { user } } = await supabaseClient.auth.getUser();
             if (user) {
@@ -798,7 +793,7 @@
                 startPolling();
             } else { setLoading(false); }
         }
-
+        
         function startPolling() {
             if(pollingTimer) clearInterval(pollingTimer);
             pollingTimer = setInterval(() => {
@@ -806,7 +801,7 @@
                 if(!document.getElementById('page_adminUsers').classList.contains('hidden')) renderUsers();
             }, 10000);
         }
-
+        
         async function initDashboard() {
             document.getElementById('loginScreen').classList.add('hidden');
             document.getElementById('mainDashboard').classList.remove('hidden');
@@ -845,26 +840,32 @@
             setLoading(false);
             lucide.createIcons();
         }
+        
+        async function handleLogout() { 
+            setLoading(true); 
+            if(pollingTimer) clearInterval(pollingTimer); 
+            await supabaseClient.auth.signOut(); 
+            window.location.reload(); 
+        }
+        window.handleLogout = handleLogout;
 
+        // Data Fetching
         async function fetchExits(isSilent = false) {
             if(!isSilent) setLoading(true);
             const { data, error } = await supabaseClient.from('exits').select('*').order('created_at', { ascending: false });
             if (!error) {
                 
-                // --- LÓGICA DE ALERTAS VISUALES NUEVAS ---
                 if (data.length > 0) {
                     if (lastKnownFirstId !== null && data[0].id !== lastKnownFirstId) {
-                        // Si detectamos un nuevo ID y no fuiste tú mismo quien lo creó
                         if (data[0].user_id !== userProfile.id) {
                             showToast(`🔔 Nueva salida registrada por ${data[0].name}`, false); 
                         }
                     }
                     lastKnownFirstId = data[0].id;
                 }
-                // --------------------------------
 
                 exitsData = data;
-                renderNotifications(); // Esto recalcula automáticamente si debe prenderse el punto rojo
+                renderNotifications(); 
                 updateDatalists();
                 if (!document.getElementById('page_calendarView').classList.contains('hidden')) renderCalendar();
                 if (!document.getElementById('page_approvals').classList.contains('hidden')) renderApprovals();
@@ -872,7 +873,7 @@
             }
             if(!isSilent) setLoading(false);
         }
-
+        
         function updateDatalists() {
             const unique = (key) => [...new Set(exitsData.map(e => e[key]).filter(Boolean))];
             const fill = (id, list) => {
@@ -906,7 +907,454 @@
             fill('materialsList', extractList('material'));
         }
 
-        // ---------- LÓGICA DE INFORMES Y EXPORTACIONES ----------
+        // Form Resets
+        function resetFormUI() {
+            editingExitId = null;
+            sourceExitId = null;
+            document.getElementById('exitForm').reset();
+            document.getElementById('exitDate').valueAsDate = new Date();
+            companionTagsArray = []; materialTagsArray = [];
+            setupTagInput('companionInput', 'companionTags', 'exitCompanion', companionTagsArray);
+            setupTagInput('materialInput', 'materialTags', 'exitMaterial', materialTagsArray);
+            document.getElementById('formTitle').textContent = "Nueva Salida";
+            document.getElementById('btnSubmitText').textContent = "Guardar Salida";
+            document.getElementById('btnCancelEdit').innerHTML = '<i data-lucide="x-circle" class="w-4 h-4"></i> Cancelar';
+            document.getElementById('btnCancelEdit').classList.add('hidden');
+            lucide.createIcons();
+        }
+
+        // Navigation
+        function showPage(id) {
+            document.querySelectorAll('main > div').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`page_${id}`).classList.remove('hidden');
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                const isActive = btn.dataset.page === id;
+                if (btn.classList.contains('mobile-nav')) {
+                    btn.classList.toggle('bg-red-50', isActive); btn.classList.toggle('text-red-600', isActive); btn.classList.toggle('text-slate-400', !isActive);
+                } else {
+                    btn.classList.toggle('bg-red-600', isActive); btn.classList.toggle('text-white', isActive); btn.classList.toggle('text-slate-500', !isActive);
+                }
+            });
+            if (id === 'calendarView') renderCalendar();
+            if (id === 'approvals') renderApprovals();
+            if (id === 'adminUsers') renderUsers();
+            if (id === 'reports') applyReportFilters();
+        }
+
+        // Exit Form Submission
+        const exitForm = document.getElementById('exitForm');
+        if(exitForm) {
+            exitForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                setLoading(true);
+                const now = new Date();
+                const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+                
+                const newExit = {
+                    name: document.getElementById('exitName').value.toUpperCase(),
+                    companion: document.getElementById('exitCompanion').value.toUpperCase(),
+                    equipment: document.getElementById('exitEquipment').value.toUpperCase(),
+                    place: document.getElementById('exitPlace').value.toUpperCase(),
+                    job: document.getElementById('exitJob').value.toUpperCase(),
+                    material: document.getElementById('exitMaterial').value.toUpperCase(),
+                    date_str: document.getElementById('exitDate').value,
+                    time_str: timeStr,
+                    user_id: (await supabaseClient.auth.getUser()).data.user.id
+                };
+                
+                let error, savedData;
+                if (editingExitId) { 
+                    newExit.status = document.getElementById('exitStatus').value;
+                    newExit.signed_by = document.getElementById('exitSignedBy').value;
+                    
+                    const { data, error: err } = await supabaseClient.from('exits').update(newExit).eq('id', editingExitId).select(); 
+                    error = err; 
+                    savedData = data;
+                } else { 
+                    newExit.status = 'PENDIENTE';
+                    newExit.signed_by = 'S/N';
+                    
+                    const { data, error: err } = await supabaseClient.from('exits').insert([newExit]).select(); 
+                    error = err; 
+                    savedData = data;
+                }
+                
+                if (error) showToast("Error: " + error.message, true);
+                else { 
+                    showToast(editingExitId ? "Actualizado" : "Guardado"); 
+                    resetFormUI();
+                    
+                    document.getElementById('exitStatus').value = 'PENDIENTE';
+                    document.getElementById('exitSignedBy').value = 'S/N';
+                    
+                    await fetchExits(); 
+                    
+                    if (savedData && savedData.length > 0) {
+                        highlightAndScrollTo(savedData[0].id);
+                    } else {
+                        showPage('calendarView'); 
+                    }
+                }
+                setLoading(false);
+            });
+        }
+
+        // CRUD & Interactions
+        function highlightAndScrollTo(id) {
+            highlightedExitId = id;
+            showPage('calendarView');
+            
+            setTimeout(() => {
+                const card = document.getElementById(`card-${id}`);
+                if (card) {
+                    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 100); 
+            
+            setTimeout(() => {
+                highlightedExitId = null;
+                if (!document.getElementById('page_calendarView').classList.contains('hidden')) {
+                    renderCalendar();
+                }
+            }, 3000);
+        }
+        
+        function startEditExit(id) {
+            const exit = exitsData.find(e => e.id === id);
+            if (!exit) return;
+            editingExitId = id;
+            sourceExitId = id;
+            showPage('registerExit');
+            document.getElementById('exitDate').value = exit.date_str;
+            document.getElementById('exitName').value = exit.name;
+            document.getElementById('exitPlace').value = exit.place;
+            document.getElementById('exitEquipment').value = exit.equipment || '';
+            document.getElementById('exitJob').value = exit.job;
+            document.getElementById('exitStatus').value = exit.status;
+            document.getElementById('exitSignedBy').value = exit.signed_by;
+            companionTagsArray = exit.companion ? exit.companion.split(',').map(s => s.trim()).filter(Boolean) : [];
+            materialTagsArray = exit.material ? exit.material.split(',').map(s => s.trim()).filter(Boolean) : [];
+            setupTagInput('companionInput', 'companionTags', 'exitCompanion', companionTagsArray);
+            setupTagInput('materialInput', 'materialTags', 'exitMaterial', materialTagsArray);
+            
+            document.getElementById('formTitle').textContent = "Editar Salida";
+            document.getElementById('btnSubmitText').textContent = "Actualizar Registro";
+            document.getElementById('btnCancelEdit').innerHTML = '<i data-lucide="x-circle" class="w-4 h-4"></i> Cancelar Edición';
+            document.getElementById('btnCancelEdit').classList.remove('hidden');
+            lucide.createIcons();
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        window.startEditExit = startEditExit;
+        
+        function copyExitToForm(id) {
+            const exit = exitsData.find(e => e.id === id);
+            if (!exit) return;
+            resetFormUI();
+            sourceExitId = id;
+            showPage('registerExit');
+            document.getElementById('exitDate').value = exit.date_str;
+            document.getElementById('exitName').value = exit.name;
+            document.getElementById('exitPlace').value = exit.place;
+            document.getElementById('exitEquipment').value = exit.equipment || '';
+            document.getElementById('exitJob').value = exit.job;
+            companionTagsArray = exit.companion ? exit.companion.split(',').map(s => s.trim()).filter(Boolean) : [];
+            materialTagsArray = exit.material ? exit.material.split(',').map(s => s.trim()).filter(Boolean) : [];
+            setupTagInput('companionInput', 'companionTags', 'exitCompanion', companionTagsArray);
+            setupTagInput('materialInput', 'materialTags', 'exitMaterial', materialTagsArray);
+            
+            document.getElementById('formTitle').textContent = "Nueva Salida (Copia)";
+            document.getElementById('btnSubmitText').textContent = "Guardar Copia";
+            document.getElementById('btnCancelEdit').innerHTML = '<i data-lucide="x-circle" class="w-4 h-4"></i> Cancelar Copiado';
+            document.getElementById('btnCancelEdit').classList.remove('hidden');
+            lucide.createIcons();
+            
+            showToast("Datos copiados al formulario");
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        window.copyExitToForm = copyExitToForm;
+        
+        function cancelEditMode() {
+            const returnId = sourceExitId; 
+            resetFormUI();
+            
+            if (returnId) {
+                highlightAndScrollTo(returnId);
+            } else {
+                showPage('calendarView');
+            }
+        }
+        window.cancelEditMode = cancelEditMode;
+        
+        async function authorizeExit(id) {
+            setLoading(true);
+            const { error } = await supabaseClient.from('exits').update({ 
+                status: 'AUTORIZADO',
+                signed_by: userProfile.name || userProfile.email 
+            }).eq('id', id);
+
+            if (error) showToast("Error: " + error.message, true);
+            else { showToast("Autorizado"); await fetchExits(); }
+            setLoading(false);
+        }
+        window.authorizeExit = authorizeExit;
+        
+        function handleDeleteExit(id) {
+            showConfirmModal(
+                "Eliminar Salida",
+                "¿Estás seguro de eliminar permanentemente este registro?",
+                async () => {
+                    setLoading(true);
+                    const targetId = isNaN(id) ? id : Number(id);
+                    const { error } = await supabaseClient.from('exits').delete().eq('id', targetId);
+                        
+                    if(error) {
+                        showToast("Error al eliminar: " + error.message, true);
+                    } else {
+                        const { data: verifyData } = await supabaseClient.from('exits').select('id').eq('id', targetId);
+                        if (verifyData && verifyData.length > 0) {
+                            showAlertModal("Acción Bloqueada (RLS)", "El registro no se pudo borrar debido a la política de seguridad (RLS).");
+                            showToast("Bloqueado por permisos (RLS)", true);
+                        } else {
+                            await fetchExits(true); 
+                            showToast("Registro eliminado con éxito");
+                        }
+                    }
+                    setLoading(false);
+                }
+            );
+        }
+        window.handleDeleteExit = handleDeleteExit;
+        
+        function showExitDetails(id) {
+            const e = exitsData.find(x => x.id === id); if(!e) return;
+            const isAuth = e.status && e.status.toUpperCase() === 'AUTORIZADO';
+            const statusClass = isAuth ? 'text-green-700 bg-green-100 border-green-200' : 'text-red-700 bg-red-100 border-red-200';
+            document.getElementById('detailsModalContent').innerHTML = `
+                <div class="space-y-5">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <label class="text-xs block font-black text-slate-400 uppercase tracking-widest">Responsable</label>
+                            <span class="font-black text-slate-900 text-xl md:text-2xl leading-tight uppercase">${e.name}</span>
+                        </div>
+                        <span class="text-xs font-black uppercase px-2.5 py-1 rounded-lg border ${statusClass}">${e.status}</span>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                        <label class="text-xs block font-black text-slate-400 uppercase tracking-widest mb-1.5">📅 Fecha</label>
+                        <p class="text-base font-bold text-slate-800">${e.date_str} <span class="text-sm font-medium text-slate-500 ml-2">${e.time_str}</span></p>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                        <label class="text-xs block font-black text-slate-400 uppercase tracking-widest mb-1.5">📍 Destino</label>
+                        <p class="text-base font-bold text-slate-800">${e.place}</p>
+                    </div>
+                    <div>
+                        <label class="text-xs block font-black text-slate-400 uppercase tracking-widest mb-1.5">💼 Trabajo</label>
+                        <p class="text-base font-medium text-slate-700">${e.job}</p>
+                    </div>
+                    <div>
+                        <label class="text-xs block font-black text-slate-400 uppercase tracking-widest mb-1.5">👥 Acompañantes</label>
+                        <p class="text-base font-medium text-slate-700">${e.companion || 'Ninguno'}</p>
+                    </div>
+                    <div>
+                        <label class="text-xs block font-black text-slate-400 uppercase tracking-widest mb-1.5">🛠️ Materiales</label>
+                        <p class="text-base font-medium text-slate-700">${e.material || 'Ninguno'}</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 pt-3 border-t border-slate-100">
+                        <div>
+                            <label class="text-xs block font-black text-slate-400 uppercase tracking-widest mb-1">🚚 Equipo</label>
+                            <p class="text-base font-bold text-slate-800">${e.equipment || 'N/A'}</p>
+                        </div>
+                        <div>
+                            <label class="text-xs block font-black text-slate-400 uppercase tracking-widest mb-1">✍️ Firmado</label>
+                            <p class="text-base font-bold text-slate-800">${e.signed_by}</p>
+                        </div>
+                    </div>
+                </div>`;
+            document.getElementById('detailsModal').classList.replace('hidden', 'flex'); 
+            lucide.createIcons();
+        }
+        window.showExitDetails = showExitDetails;
+        
+        function closeExitDetails() {
+            document.getElementById('detailsModal').classList.replace('flex', 'hidden');
+        }
+        window.closeExitDetails = closeExitDetails;
+
+        // Calendar & History
+        function setViewMode(mode) {
+            currentViewMode = mode;
+            activeSearchTerm = "";
+            document.getElementById('historySearchInput').value = "";
+            ['day', 'week', 'month'].forEach(m => {
+                const btn = document.getElementById(`tab_${m}`);
+                if(btn) {
+                    btn.className = (m === mode) ? "pb-2 text-sm transition-all text-red-800 font-bold border-b-2 border-red-800" : "pb-2 text-sm transition-all text-slate-500 font-medium hover:text-slate-800 border-b-2 border-transparent";
+                }
+            });
+            renderCalendar();
+        }
+        window.setViewMode = setViewMode;
+        
+        function triggerHistorySearch(val) {
+            activeSearchTerm = val.trim().toLowerCase();
+            renderCalendar();
+        }
+        window.triggerHistorySearch = triggerHistorySearch;
+        
+        function changeDateOffset(offset) {
+            if (currentViewMode === 'day') currentDateAnchor.setDate(currentDateAnchor.getDate() + offset);
+            else if (currentViewMode === 'week') currentDateAnchor.setDate(currentDateAnchor.getDate() + (offset * 7));
+            else if (currentViewMode === 'month') currentDateAnchor.setMonth(currentDateAnchor.getMonth() + offset);
+            renderCalendar();
+        }
+        window.changeDateOffset = changeDateOffset;
+        
+        function goToToday() { 
+            currentDateAnchor = new Date(); 
+            renderCalendar(); 
+        }
+        window.goToToday = goToToday;
+        
+        function renderCalendar() {
+            const body = document.getElementById('calendarBody');
+            if(!body) return;
+            const rangeDisplay = document.getElementById('currentWeekRange');
+            const isAdmin = userProfile && (userProfile.role === 'admin' || userProfile.is_admin);
+            body.innerHTML = '';
+
+            if (activeSearchTerm) {
+                document.getElementById('calendarControls').style.opacity = '0.3';
+                document.getElementById('dateNavigation').style.opacity = '0.3';
+                rangeDisplay.textContent = `Buscando: "${activeSearchTerm}"`;
+                
+                const filtered = exitsData.filter(e => 
+                    e.name.toLowerCase().includes(activeSearchTerm) ||
+                    e.place.toLowerCase().includes(activeSearchTerm) ||
+                    e.job.toLowerCase().includes(activeSearchTerm) ||
+                    (e.equipment && e.equipment.toLowerCase().includes(activeSearchTerm))
+                );
+
+                if (filtered.length === 0) {
+                    body.innerHTML = `<div class="col-span-full flex flex-col items-center justify-center p-12"><i data-lucide="search-x" class="w-12 h-12 text-slate-300 mb-2"></i><p class="text-slate-400 font-bold">No se encontraron resultados</p></div>`;
+                } else {
+                    body.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-4 lg:bg-white lg:rounded-[2rem]";
+                    body.innerHTML = filtered.map(e => renderExitCard(e, isAdmin)).join('');
+                }
+                lucide.createIcons();
+                return;
+            }
+
+            document.getElementById('calendarControls').style.opacity = '1';
+            document.getElementById('dateNavigation').style.opacity = '1';
+            
+            let startDate, endDate;
+            if (currentViewMode === 'day') {
+                startDate = new Date(currentDateAnchor); endDate = new Date(currentDateAnchor);
+                rangeDisplay.textContent = startDate.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                body.className = "grid grid-cols-1 lg:bg-white lg:border lg:border-slate-200 lg:rounded-[2rem] overflow-hidden lg:shadow-sm lg:min-h-[400px]";
+            } else if (currentViewMode === 'week') {
+                startDate = (function(d){ d = new Date(d); let day = d.getDay(); let diff = d.getDate() - day + (day === 0 ? -6 : 1); return new Date(d.setDate(diff)); })(currentDateAnchor);
+                endDate = new Date(startDate); endDate.setDate(startDate.getDate() + 6);
+                rangeDisplay.textContent = `${startDate.toLocaleDateString('es-ES', { month: 'short', day: 'numeric' })} - ${endDate.toLocaleDateString('es-ES', { month: 'short', day: 'numeric', year: 'numeric' })}`;
+                body.className = "grid grid-cols-1 lg:grid-cols-7 gap-3 lg:gap-0 lg:bg-white lg:border lg:border-slate-200 lg:rounded-[2rem] overflow-hidden lg:shadow-sm lg:min-h-[600px]";
+            } else {
+                startDate = new Date(currentDateAnchor.getFullYear(), currentDateAnchor.getMonth(), 1);
+                endDate = new Date(currentDateAnchor.getFullYear(), currentDateAnchor.getMonth() + 1, 0);
+                rangeDisplay.textContent = startDate.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' }).toUpperCase();
+                body.className = "grid grid-cols-1 lg:grid-cols-7 gap-3 lg:gap-0 lg:bg-white lg:border lg:border-slate-200 lg:rounded-[2rem] overflow-hidden lg:shadow-sm lg:min-h-[600px]";
+            }
+            
+            let curr = new Date(startDate);
+            while (curr <= endDate) {
+                const d = new Date(curr); const iso = d.toISOString().split('T')[0];
+                const dayExits = exitsData.filter(e => e.date_str === iso);
+                if (currentViewMode === 'month' && window.innerWidth < 1024 && dayExits.length === 0 && d.toLocaleDateString() !== new Date().toLocaleDateString()) {
+                    curr.setDate(curr.getDate() + 1); continue;
+                }
+                const isToday = new Date().toLocaleDateString() === d.toLocaleDateString();
+                const isWeekend = d.getDay() === 0 || d.getDay() === 6;
+                const col = document.createElement('div');
+                col.className = `flex flex-col bg-white lg:bg-transparent rounded-2xl lg:rounded-none p-4 shadow-sm lg:shadow-none border lg:border-0 lg:border-r border-slate-100 ${isToday ? 'lg:bg-red-50/40 ring-2 lg:ring-0 ring-red-500' : ''}`;
+                col.innerHTML = `
+                    <div class="flex lg:flex-col justify-center items-center mb-4 lg:border-b lg:pb-4">
+                        <div class="text-center">
+                            <span class="block text-2xl lg:text-3xl font-black ${isToday ? 'text-red-600' : 'text-slate-800'} tracking-tighter">${d.getDate()}</span>
+                            <span class="block text-[10px] font-black uppercase tracking-widest text-slate-500">${['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'][d.getDay()]}</span>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        ${dayExits.length === 0 ? '<p class="text-[10px] text-slate-300 text-center py-4 uppercase font-bold opacity-50">S/N</p>' : dayExits.map(e => renderExitCard(e, isAdmin)).join('')}
+                    </div>
+                `;
+                body.appendChild(col); curr.setDate(curr.getDate() + 1);
+            }
+            lucide.createIcons();
+        }
+
+        function renderExitCard(e, isAdmin) {
+            const isAuth = e.status && e.status.toUpperCase() === 'AUTORIZADO';
+            const isHighlighted = typeof highlightedExitId !== 'undefined' && e.id === highlightedExitId;
+            
+            const actionButtons = isAdmin ? `
+                <div class="absolute top-1.5 right-1.5 flex gap-1 lg:opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button title="Copiar" onclick="event.stopPropagation(); copyExitToForm('${e.id}')" class="p-1.5 bg-white/20 hover:bg-white/40 rounded-lg text-white backdrop-blur-md"><i data-lucide="copy" class="w-3 h-3"></i></button>
+                    <button title="Editar" onclick="event.stopPropagation(); startEditExit('${e.id}')" class="p-1.5 bg-white/20 hover:bg-white/40 rounded-lg text-white backdrop-blur-md"><i data-lucide="edit-3" class="w-3 h-3"></i></button>
+                    <button title="Eliminar" onclick="event.stopPropagation(); handleDeleteExit('${e.id}')" class="p-1.5 bg-white/20 hover:bg-white/40 rounded-lg text-white backdrop-blur-md"><i data-lucide="trash-2" class="w-3 h-3"></i></button>
+                </div>` : '';
+
+            const baseClass = isAuth ? 'bg-green-600 text-white' : 'bg-red-600 text-white';
+            const highlightClass = isHighlighted ? 'ring-4 ring-amber-400 shadow-2xl scale-[1.03] z-10' : 'border-transparent shadow-sm hover:scale-[1.02]';
+
+            return `
+            <div id="card-${e.id}" onclick="showExitDetails('${e.id}')" class="p-3 rounded-xl border group relative cursor-pointer transition-all duration-300 ${baseClass} ${highlightClass}">
+                ${actionButtons}
+                <div class="flex items-center gap-1.5 mb-1.5">
+                    <span class="text-[9px] font-black bg-white/20 px-1.5 py-0.5 rounded uppercase tracking-tighter">${activeSearchTerm ? e.date_str + ' • ' : ''}${e.time_str}</span>
+                </div>
+                <p class="text-sm font-black leading-tight pr-10 uppercase tracking-tight">${e.name}</p>
+                <div class="mt-2 space-y-1 opacity-90">
+                    <p class="text-[10px] flex items-start gap-1.5 font-bold line-clamp-1"><i data-lucide="map-pin" class="w-3 h-3 shrink-0 mt-0.5"></i> ${e.place}</p>
+                    <p class="text-[10px] flex items-start gap-1.5 font-medium line-clamp-1"><i data-lucide="briefcase" class="w-3 h-3 shrink-0 mt-0.5"></i> ${e.job}</p>
+                    ${e.equipment ? `<p class="text-[10px] flex items-start gap-1.5 font-medium line-clamp-1"><i data-lucide="truck" class="w-3 h-3 shrink-0 mt-0.5"></i> ${e.equipment}</p>` : ''}
+                </div>
+                <div class="mt-3 pt-3 border-t border-white/20 flex items-center gap-2 text-[10px] font-black uppercase">
+                    <i data-lucide="${isAuth ? 'check' : 'alert-triangle'}" class="w-4 h-4"></i> 
+                    ${e.status}
+                </div>
+            </div>`;
+        }
+
+        // Approvals
+        function renderApprovals() {
+            const list = document.getElementById('approvalsList');
+            const pending = exitsData.filter(e => e.status && e.status.trim().toUpperCase() === 'PENDIENTE');
+            if (pending.length === 0) {
+                list.innerHTML = '<div class="text-center py-10 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200"><p class="text-slate-400 text-sm font-bold uppercase tracking-widest">No hay salidas pendientes</p></div>';
+                return;
+            }
+            list.innerHTML = pending.map(e => `
+                <div onclick="showExitDetails('${e.id}')" class="bg-slate-50 p-5 rounded-[1.5rem] border border-slate-200 shadow-sm flex flex-col gap-4 cursor-pointer hover:bg-white transition-colors">
+                    <div class="flex-1">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-[10px] font-black bg-red-100 text-red-600 px-2.5 py-1 rounded-lg uppercase tracking-wider">PENDIENTE</span>
+                            <span class="text-[10px] font-bold text-slate-400 font-mono">${e.date_str} • ${e.time_str}</span>
+                        </div>
+                        <h3 class="text-base font-black text-slate-900 mb-3 uppercase tracking-tight">${e.name}</h3>
+                        <div class="grid grid-cols-1 gap-2.5">
+                            <div class="flex items-start gap-2.5"><div class="bg-white p-1.5 rounded-lg border border-slate-100"><i data-lucide="map-pin" class="w-4 h-4 text-slate-400"></i></div><div><p class="text-[9px] font-black text-slate-400 uppercase leading-none mb-0.5">Destino</p><p class="text-xs font-bold text-slate-700 leading-tight">${e.place}</p></div></div>
+                            <div class="flex items-start gap-2.5"><div class="bg-white p-1.5 rounded-lg border border-slate-100"><i data-lucide="briefcase" class="w-4 h-4 text-slate-400"></i></div><div><p class="text-[9px] font-black text-slate-400 uppercase leading-none mb-0.5">Trabajo a realizar</p><p class="text-xs font-medium text-slate-600 leading-tight">${e.job}</p></div></div>
+                            <div class="flex items-start gap-2.5"><div class="bg-white p-1.5 rounded-lg border border-slate-100"><i data-lucide="truck" class="w-4 h-4 text-slate-400"></i></div><div><p class="text-[9px] font-black text-slate-400 uppercase leading-none mb-0.5">Vehículo / Equipo</p><p class="text-xs font-medium text-slate-600 leading-tight">${e.equipment || 'No especificado'}</p></div></div>
+                        </div>
+                    </div>
+                    <div class="pt-2 border-t border-slate-200/60">
+                        <button onclick="event.stopPropagation(); authorizeExit('${e.id}')" class="w-full bg-green-600 hover:bg-green-700 active:scale-[0.98] text-white py-3.5 rounded-xl font-bold text-sm transition-all shadow-lg shadow-green-100 flex items-center justify-center gap-2 uppercase tracking-widest"><i data-lucide="check-circle" class="w-4 h-4"></i> Autorizar</button>
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        // Reports
         function applyReportFilters() {
             const startStr = document.getElementById('repDateStart').value;
             const endStr = document.getElementById('repDateEnd').value;
@@ -919,7 +1367,7 @@
             if (startStr && endStr) {
                 filtered = filtered.filter(e => e.date_str >= startStr && e.date_str <= endStr);
             }
-            if (status) filtered = filtered.filter(e => e.status.toUpperCase() === status.toUpperCase());
+            if (status) filtered = filtered.filter(e => e.status && e.status.toUpperCase() === status.toUpperCase());
             if (operator) filtered = filtered.filter(e => e.name === operator);
             if (activity) filtered = filtered.filter(e => e.job === activity);
 
@@ -927,11 +1375,12 @@
             updateReportCharts(filtered);
             updateReportTable(filtered);
         }
+        window.applyReportFilters = applyReportFilters;
 
         function updateReportKPIs(data) {
             const total = data.length;
-            const auth = data.filter(e => e.status.toUpperCase() === 'AUTORIZADO').length;
-            const pend = data.filter(e => e.status.toUpperCase() === 'PENDIENTE').length;
+            const auth = data.filter(e => e.status && e.status.toUpperCase() === 'AUTORIZADO').length;
+            const pend = data.filter(e => e.status && e.status.toUpperCase() === 'PENDIENTE').length;
             const uniqueEquips = new Set(data.map(e => e.equipment).filter(Boolean)).size;
 
             document.getElementById('kpiTotal').textContent = total;
@@ -943,7 +1392,6 @@
         function updateReportCharts(data) {
             Chart.defaults.font.family = "'Inter', sans-serif";
             
-            // Forzar fondo blanco para ChartJS (Resuelve fondo negro en PDFs exportados)
             const whiteBackgroundPlugin = {
                 id: 'customCanvasBackgroundColor',
                 beforeDraw: (chart, args, options) => {
@@ -958,8 +1406,8 @@
 
             Chart.register(ChartDataLabels, whiteBackgroundPlugin);
             
-            const auth = data.filter(e => e.status.toUpperCase() === 'AUTORIZADO').length;
-            const pend = data.filter(e => e.status.toUpperCase() === 'PENDIENTE').length;
+            const auth = data.filter(e => e.status && e.status.toUpperCase() === 'AUTORIZADO').length;
+            const pend = data.filter(e => e.status && e.status.toUpperCase() === 'PENDIENTE').length;
             
             if(chartInstanceStatus) chartInstanceStatus.destroy();
             chartInstanceStatus = new Chart(document.getElementById('chartStatus'), {
@@ -1038,7 +1486,7 @@
                 return;
             }
             tbody.innerHTML = data.map(e => {
-                const c = e.status.toUpperCase() === 'AUTORIZADO' ? 'text-green-600 bg-green-50' : 'text-red-600 bg-red-50';
+                const c = e.status && e.status.toUpperCase() === 'AUTORIZADO' ? 'text-green-600 bg-green-50' : 'text-red-600 bg-red-50';
                 return `
                 <tr class="hover:bg-slate-50 transition-colors">
                     <td class="px-4 py-3"><span class="block text-slate-800">${e.date_str}</span><span class="text-[10px] text-slate-400 uppercase tracking-tighter">${e.time_str}</span></td>
@@ -1060,7 +1508,7 @@
 
             let filtered = exitsData;
             if (startStr && endStr) filtered = filtered.filter(e => e.date_str >= startStr && e.date_str <= endStr);
-            if (status) filtered = filtered.filter(e => e.status.toUpperCase() === status.toUpperCase());
+            if (status) filtered = filtered.filter(e => e.status && e.status.toUpperCase() === status.toUpperCase());
             if (operator) filtered = filtered.filter(e => e.name === operator);
             if (activity) filtered = filtered.filter(e => e.job === activity);
 
@@ -1075,7 +1523,7 @@
                 'Acompañantes': e.companion || 'Ninguno',
                 'Materiales': e.material || 'Ninguno',
                 'Equipo / Placa': e.equipment || 'N/A',
-                'Estado': e.status.toUpperCase(),
+                'Estado': e.status && e.status.toUpperCase(),
                 'Aprobado Por': e.signed_by
             }));
 
@@ -1089,8 +1537,8 @@
             XLSX.writeFile(workbook, `Reporte_Salidas_${new Date().toISOString().split('T')[0]}.xlsx`);
             showToast("Excel descargado exitosamente");
         }
+        window.exportToExcel = exportToExcel;
 
-        // Exportar a PDF mediante Plantilla Rígida - RESUELVE FONDO NEGRO Y FORMATOS LARGOS
         function exportToPDF() {
             setLoading(true);
             
@@ -1119,7 +1567,7 @@
 
             let filtered = exitsData;
             if (startStr && endStr) filtered = filtered.filter(e => e.date_str >= startStr && e.date_str <= endStr);
-            if (status) filtered = filtered.filter(e => e.status.toUpperCase() === status.toUpperCase());
+            if (status) filtered = filtered.filter(e => e.status && e.status.toUpperCase() === status.toUpperCase());
             if (operator) filtered = filtered.filter(e => e.name === operator);
             if (activity) filtered = filtered.filter(e => e.job === activity);
 
@@ -1128,7 +1576,7 @@
                 pdfTbody.innerHTML = '<tr><td colspan="6" style="padding: 20px; text-align: center; color: #94a3b8;">No hay datos en este reporte.</td></tr>';
             } else {
                 pdfTbody.innerHTML = filtered.map(e => {
-                    const isAuth = e.status.toUpperCase() === 'AUTORIZADO';
+                    const isAuth = e.status && e.status.toUpperCase() === 'AUTORIZADO';
                     const color = isAuth ? '#16a34a' : '#dc2626';
                     const bg = isAuth ? '#f0fdf4' : '#fef2f2';
                     return `
@@ -1143,7 +1591,6 @@
                 }).join('');
             }
 
-            // SIMULADOR DE PC: Agrandamos los recuadros de la UI original para forzar el renderizado en alta calidad
             const chartWrappers = document.querySelectorAll('#uiReportContent .relative.w-full');
             const originalStyles = [];
             chartWrappers.forEach(w => {
@@ -1156,14 +1603,11 @@
                 Chart.instances[id].resize();
             }
 
-            // Esperar el redibujado de la gráfica y generar el PDF
             setTimeout(() => {
-                // Sacar "fotografía" en PNG para asegurar fondos blancos transparentes correctos
                 if(chartInstanceStatus) document.getElementById('pdfImgStatus').src = chartInstanceStatus.toBase64Image('image/png', 1.0);
                 if(chartInstanceActivity) document.getElementById('pdfImgActivity').src = chartInstanceActivity.toBase64Image('image/png', 1.0);
                 if(chartInstanceLocation) document.getElementById('pdfImgLocation').src = chartInstanceLocation.toBase64Image('image/png', 1.0);
 
-                // Restaurar UI a formato móvil si el usuario estaba en celular
                 chartWrappers.forEach((w, idx) => {
                     w.style.width = originalStyles[idx].width;
                     w.style.height = originalStyles[idx].height;
@@ -1207,9 +1651,10 @@
                         setLoading(false);
                         showToast("Error al crear el PDF", true);
                     });
-                }, 600); // 600ms de gracia para que HTML2PDF lea las nuevas medidas forzadas
-            }, 600); // 600ms para asegurar redibujado de la PC en celular
+                }, 600); 
+            }, 600); 
         }
+        window.exportToPDF = exportToPDF;
 
         window.clearReportFilters = () => {
             document.getElementById('repDateStart').value = '';
@@ -1221,6 +1666,7 @@
             showToast("Filtros eliminados");
         };
 
+        // Tags
         function setupTagInput(inputId, containerId, hiddenId, listRef) {
             const input = document.getElementById(inputId);
             const container = document.getElementById(containerId);
@@ -1233,8 +1679,9 @@
                 lucide.createIcons();
             };
             const addCurrentValue = () => {
-                const val = input.value.trim().replace(/,/g, '');
+                let val = input.value.trim().replace(/,/g, '');
                 if (val) { 
+                    val = val.toUpperCase(); 
                     if (!listRef.includes(val)) listRef.push(val); 
                     input.value = ''; 
                     renderTags(); 
@@ -1251,387 +1698,7 @@
             else { materialTagsArray.splice(idx, 1); setupTagInput('materialInput', 'materialTags', 'exitMaterial', materialTagsArray); }
         };
 
-        window.authorizeExit = authorizeExit;
-        window.handleDeleteExit = handleDeleteExit;
-        window.setViewMode = setViewMode;
-        window.changeDateOffset = changeDateOffset;
-        window.goToToday = goToToday;
-        window.startEditExit = startEditExit;
-        window.copyExitToForm = copyExitToForm;
-        window.cancelEditMode = cancelEditMode;
-        window.triggerHistorySearch = triggerHistorySearch;
-
-        window.showExitDetails = (id) => {
-            const e = exitsData.find(x => x.id === id); if(!e) return;
-            const isAuth = e.status.toUpperCase() === 'AUTORIZADO';
-            const statusClass = isAuth ? 'text-green-700 bg-green-100 border-green-200' : 'text-red-700 bg-red-100 border-red-200';
-            document.getElementById('detailsModalContent').innerHTML = `
-                <div class="space-y-5">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <label class="text-xs block font-black text-slate-400 uppercase tracking-widest">Responsable</label>
-                            <span class="font-black text-slate-900 text-xl md:text-2xl leading-tight uppercase">${e.name}</span>
-                        </div>
-                        <span class="text-xs font-black uppercase px-2.5 py-1 rounded-lg border ${statusClass}">${e.status}</span>
-                    </div>
-                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
-                        <label class="text-xs block font-black text-slate-400 uppercase tracking-widest mb-1.5">📅 Fecha</label>
-                        <p class="text-base font-bold text-slate-800">${e.date_str} <span class="text-sm font-medium text-slate-500 ml-2">${e.time_str}</span></p>
-                    </div>
-                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
-                        <label class="text-xs block font-black text-slate-400 uppercase tracking-widest mb-1.5">📍 Destino</label>
-                        <p class="text-base font-bold text-slate-800">${e.place}</p>
-                    </div>
-                    <div>
-                        <label class="text-xs block font-black text-slate-400 uppercase tracking-widest mb-1.5">💼 Trabajo</label>
-                        <p class="text-base font-medium text-slate-700">${e.job}</p>
-                    </div>
-                    <div>
-                        <label class="text-xs block font-black text-slate-400 uppercase tracking-widest mb-1.5">👥 Acompañantes</label>
-                        <p class="text-base font-medium text-slate-700">${e.companion || 'Ninguno'}</p>
-                    </div>
-                    <div>
-                        <label class="text-xs block font-black text-slate-400 uppercase tracking-widest mb-1.5">🛠️ Materiales</label>
-                        <p class="text-base font-medium text-slate-700">${e.material || 'Ninguno'}</p>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4 pt-3 border-t border-slate-100">
-                        <div>
-                            <label class="text-xs block font-black text-slate-400 uppercase tracking-widest mb-1">🚚 Equipo</label>
-                            <p class="text-base font-bold text-slate-800">${e.equipment || 'N/A'}</p>
-                        </div>
-                        <div>
-                            <label class="text-xs block font-black text-slate-400 uppercase tracking-widest mb-1">✍️ Firmado</label>
-                            <p class="text-base font-bold text-slate-800">${e.signed_by}</p>
-                        </div>
-                    </div>
-                </div>`;
-            document.getElementById('detailsModal').classList.replace('hidden', 'flex'); 
-            lucide.createIcons();
-        };
-
-        window.closeExitDetails = () => document.getElementById('detailsModal').classList.replace('flex', 'hidden');
-
-        function startEditExit(id) {
-            const exit = exitsData.find(e => e.id === id);
-            if (!exit) return;
-            editingExitId = id;
-            showPage('registerExit');
-            document.getElementById('exitDate').value = exit.date_str;
-            document.getElementById('exitName').value = exit.name;
-            document.getElementById('exitPlace').value = exit.place;
-            document.getElementById('exitEquipment').value = exit.equipment || '';
-            document.getElementById('exitJob').value = exit.job;
-            document.getElementById('exitStatus').value = exit.status;
-            document.getElementById('exitSignedBy').value = exit.signed_by;
-            companionTagsArray = exit.companion ? exit.companion.split(',').map(s => s.trim()).filter(Boolean) : [];
-            materialTagsArray = exit.material ? exit.material.split(',').map(s => s.trim()).filter(Boolean) : [];
-            setupTagInput('companionInput', 'companionTags', 'exitCompanion', companionTagsArray);
-            setupTagInput('materialInput', 'materialTags', 'exitMaterial', materialTagsArray);
-            document.getElementById('formTitle').textContent = "Editar Salida";
-            document.getElementById('btnSubmitText').textContent = "Actualizar Registro";
-            document.getElementById('btnCancelEdit').classList.remove('hidden');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function copyExitToForm(id) {
-            const exit = exitsData.find(e => e.id === id);
-            if (!exit) return;
-            cancelEditMode();
-            showPage('registerExit');
-            document.getElementById('exitDate').value = exit.date_str;
-            document.getElementById('exitName').value = exit.name;
-            document.getElementById('exitPlace').value = exit.place;
-            document.getElementById('exitEquipment').value = exit.equipment || '';
-            document.getElementById('exitJob').value = exit.job;
-            companionTagsArray = exit.companion ? exit.companion.split(',').map(s => s.trim()).filter(Boolean) : [];
-            materialTagsArray = exit.material ? exit.material.split(',').map(s => s.trim()).filter(Boolean) : [];
-            setupTagInput('companionInput', 'companionTags', 'exitCompanion', companionTagsArray);
-            setupTagInput('materialInput', 'materialTags', 'exitMaterial', materialTagsArray);
-            showToast("Datos copiados al formulario");
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function cancelEditMode() {
-            editingExitId = null;
-            document.getElementById('exitForm').reset();
-            document.getElementById('exitDate').valueAsDate = new Date();
-            companionTagsArray = []; materialTagsArray = [];
-            setupTagInput('companionInput', 'companionTags', 'exitCompanion', companionTagsArray);
-            setupTagInput('materialInput', 'materialTags', 'exitMaterial', materialTagsArray);
-            document.getElementById('formTitle').textContent = "Nueva Salida";
-            document.getElementById('btnSubmitText').textContent = "Guardar Salida";
-            document.getElementById('btnCancelEdit').classList.add('hidden');
-        }
-
-        function setViewMode(mode) {
-            currentViewMode = mode;
-            activeSearchTerm = "";
-            document.getElementById('historySearchInput').value = "";
-            ['day', 'week', 'month'].forEach(m => {
-                const btn = document.getElementById(`tab_${m}`);
-                btn.className = (m === mode) ? "pb-2 text-sm transition-all text-red-800 font-bold border-b-2 border-red-800" : "pb-2 text-sm transition-all text-slate-500 font-medium hover:text-slate-800 border-b-2 border-transparent";
-            });
-            renderCalendar();
-        }
-
-        function triggerHistorySearch(val) {
-            activeSearchTerm = val.trim().toLowerCase();
-            renderCalendar();
-        }
-
-        function changeDateOffset(offset) {
-            if (currentViewMode === 'day') currentDateAnchor.setDate(currentDateAnchor.getDate() + offset);
-            else if (currentViewMode === 'week') currentDateAnchor.setDate(currentDateAnchor.getDate() + (offset * 7));
-            else if (currentViewMode === 'month') currentDateAnchor.setMonth(currentDateAnchor.getMonth() + offset);
-            renderCalendar();
-        }
-
-        function goToToday() { currentDateAnchor = new Date(); renderCalendar(); }
-
-        function renderCalendar() {
-            const body = document.getElementById('calendarBody');
-            const rangeDisplay = document.getElementById('currentWeekRange');
-            const isAdmin = userProfile.role === 'admin' || userProfile.is_admin;
-            body.innerHTML = '';
-
-            if (activeSearchTerm) {
-                document.getElementById('calendarControls').style.opacity = '0.3';
-                document.getElementById('dateNavigation').style.opacity = '0.3';
-                rangeDisplay.textContent = `Buscando: "${activeSearchTerm}"`;
-                
-                const filtered = exitsData.filter(e => 
-                    e.name.toLowerCase().includes(activeSearchTerm) ||
-                    e.place.toLowerCase().includes(activeSearchTerm) ||
-                    e.job.toLowerCase().includes(activeSearchTerm) ||
-                    (e.equipment && e.equipment.toLowerCase().includes(activeSearchTerm))
-                );
-
-                if (filtered.length === 0) {
-                    body.innerHTML = `<div class="col-span-full flex flex-col items-center justify-center p-12"><i data-lucide="search-x" class="w-12 h-12 text-slate-300 mb-2"></i><p class="text-slate-400 font-bold">No se encontraron resultados</p></div>`;
-                } else {
-                    body.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-4 lg:bg-white lg:rounded-[2rem]";
-                    body.innerHTML = filtered.map(e => renderExitCard(e, isAdmin)).join('');
-                }
-                lucide.createIcons();
-                return;
-            }
-
-            document.getElementById('calendarControls').style.opacity = '1';
-            document.getElementById('dateNavigation').style.opacity = '1';
-            
-            let startDate, endDate;
-            if (currentViewMode === 'day') {
-                startDate = new Date(currentDateAnchor); endDate = new Date(currentDateAnchor);
-                rangeDisplay.textContent = startDate.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-                body.className = "grid grid-cols-1 lg:bg-white lg:border lg:border-slate-200 lg:rounded-[2rem] overflow-hidden lg:shadow-sm lg:min-h-[400px]";
-            } else if (currentViewMode === 'week') {
-                startDate = (function(d){ d = new Date(d); let day = d.getDay(); let diff = d.getDate() - day + (day === 0 ? -6 : 1); return new Date(d.setDate(diff)); })(currentDateAnchor);
-                endDate = new Date(startDate); endDate.setDate(startDate.getDate() + 6);
-                rangeDisplay.textContent = `${startDate.toLocaleDateString('es-ES', { month: 'short', day: 'numeric' })} - ${endDate.toLocaleDateString('es-ES', { month: 'short', day: 'numeric', year: 'numeric' })}`;
-                body.className = "grid grid-cols-1 lg:grid-cols-7 gap-3 lg:gap-0 lg:bg-white lg:border lg:border-slate-200 lg:rounded-[2rem] overflow-hidden lg:shadow-sm lg:min-h-[600px]";
-            } else {
-                startDate = new Date(currentDateAnchor.getFullYear(), currentDateAnchor.getMonth(), 1);
-                endDate = new Date(currentDateAnchor.getFullYear(), currentDateAnchor.getMonth() + 1, 0);
-                rangeDisplay.textContent = startDate.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' }).toUpperCase();
-                body.className = "grid grid-cols-1 lg:grid-cols-7 gap-3 lg:gap-0 lg:bg-white lg:border lg:border-slate-200 lg:rounded-[2rem] overflow-hidden lg:shadow-sm lg:min-h-[600px]";
-            }
-            
-            let curr = new Date(startDate);
-            while (curr <= endDate) {
-                const d = new Date(curr); const iso = d.toISOString().split('T')[0];
-                const dayExits = exitsData.filter(e => e.date_str === iso);
-                if (currentViewMode === 'month' && window.innerWidth < 1024 && dayExits.length === 0 && d.toLocaleDateString() !== new Date().toLocaleDateString()) {
-                    curr.setDate(curr.getDate() + 1); continue;
-                }
-                const isToday = new Date().toLocaleDateString() === d.toLocaleDateString();
-                const isWeekend = d.getDay() === 0 || d.getDay() === 6;
-                const col = document.createElement('div');
-                col.className = `flex flex-col bg-white lg:bg-transparent rounded-2xl lg:rounded-none p-4 shadow-sm lg:shadow-none border lg:border-0 lg:border-r border-slate-100 ${isToday ? 'lg:bg-red-50/40 ring-2 lg:ring-0 ring-red-500' : ''}`;
-                col.innerHTML = `
-                    <div class="flex lg:flex-col justify-center items-center mb-4 lg:border-b lg:pb-4">
-                        <div class="text-center">
-                            <span class="block text-2xl lg:text-3xl font-black ${isToday ? 'text-red-600' : 'text-slate-800'} tracking-tighter">${d.getDate()}</span>
-                            <span class="block text-[10px] font-black uppercase tracking-widest text-slate-500">${['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'][d.getDay()]}</span>
-                        </div>
-                    </div>
-                    <div class="flex flex-col gap-2">
-                        ${dayExits.length === 0 ? '<p class="text-[10px] text-slate-300 text-center py-4 uppercase font-bold opacity-50">S/N</p>' : dayExits.map(e => renderExitCard(e, isAdmin)).join('')}
-                    </div>
-                `;
-                body.appendChild(col); curr.setDate(curr.getDate() + 1);
-            }
-            lucide.createIcons();
-        }
-
-        function renderExitCard(e, isAdmin) {
-            const isAuth = e.status.toUpperCase() === 'AUTORIZADO';
-            const actionButtons = isAdmin ? `
-                <div class="absolute top-1.5 right-1.5 flex gap-1 lg:opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button title="Copiar" onclick="event.stopPropagation(); copyExitToForm('${e.id}')" class="p-1.5 bg-white/20 hover:bg-white/40 rounded-lg text-white backdrop-blur-md"><i data-lucide="copy" class="w-3 h-3"></i></button>
-                    <button title="Editar" onclick="event.stopPropagation(); startEditExit('${e.id}')" class="p-1.5 bg-white/20 hover:bg-white/40 rounded-lg text-white backdrop-blur-md"><i data-lucide="edit-3" class="w-3 h-3"></i></button>
-                    <button title="Eliminar" onclick="event.stopPropagation(); handleDeleteExit('${e.id}')" class="p-1.5 bg-white/20 hover:bg-white/40 rounded-lg text-white backdrop-blur-md"><i data-lucide="trash-2" class="w-3 h-3"></i></button>
-                </div>` : '';
-
-            return `
-            <div onclick="showExitDetails('${e.id}')" class="p-3 rounded-xl border border-transparent shadow-sm group relative cursor-pointer hover:scale-[1.02] transition-all ${isAuth ? 'bg-green-600 text-white' : 'bg-red-600 text-white'}">
-                ${actionButtons}
-                <div class="flex items-center gap-1.5 mb-1.5">
-                    <span class="text-[9px] font-black bg-white/20 px-1.5 py-0.5 rounded uppercase tracking-tighter">${activeSearchTerm ? e.date_str + ' • ' : ''}${e.time_str}</span>
-                </div>
-                <p class="text-sm font-black leading-tight pr-10 uppercase tracking-tight">${e.name}</p>
-                <div class="mt-2 space-y-1 opacity-90">
-                    <p class="text-[10px] flex items-start gap-1.5 font-bold line-clamp-1"><i data-lucide="map-pin" class="w-3 h-3 shrink-0 mt-0.5"></i> ${e.place}</p>
-                    <p class="text-[10px] flex items-start gap-1.5 font-medium line-clamp-1"><i data-lucide="briefcase" class="w-3 h-3 shrink-0 mt-0.5"></i> ${e.job}</p>
-                    ${e.equipment ? `<p class="text-[10px] flex items-start gap-1.5 font-medium line-clamp-1"><i data-lucide="truck" class="w-3 h-3 shrink-0 mt-0.5"></i> ${e.equipment}</p>` : ''}
-                </div>
-                <div class="mt-3 pt-3 border-t border-white/20 flex items-center gap-2 text-[10px] font-black uppercase">
-                    <i data-lucide="${isAuth ? 'check' : 'alert-triangle'}" class="w-4 h-4"></i> 
-                    ${e.status}
-                </div>
-            </div>`;
-        }
-
-        const exitForm = document.getElementById('exitForm');
-        exitForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            setLoading(true);
-            const now = new Date();
-            const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
-            
-            // Creamos el objeto base SOLO con los datos que el usuario teclea
-            const newExit = {
-                name: document.getElementById('exitName').value,
-                companion: document.getElementById('exitCompanion').value,
-                equipment: document.getElementById('exitEquipment').value,
-                place: document.getElementById('exitPlace').value,
-                job: document.getElementById('exitJob').value,
-                material: document.getElementById('exitMaterial').value,
-                date_str: document.getElementById('exitDate').value,
-                time_str: timeStr,
-                user_id: (await supabaseClient.auth.getUser()).data.user.id
-            };
-            
-            let error;
-            if (editingExitId) { 
-                // SI ESTAMOS EDITANDO: Respetamos el estado que ya tenía el registro
-                newExit.status = document.getElementById('exitStatus').value;
-                newExit.signed_by = document.getElementById('exitSignedBy').value;
-                
-                const { error: err } = await supabaseClient.from('exits').update(newExit).eq('id', editingExitId); 
-                error = err; 
-            } else { 
-                // SI ES UN REGISTRO NUEVO: FORZAMOS SIEMPRE A QUE SEA PENDIENTE (Evita auto-aprobaciones)
-                newExit.status = 'PENDIENTE';
-                newExit.signed_by = 'S/N';
-                
-                const { error: err } = await supabaseClient.from('exits').insert([newExit]); 
-                error = err; 
-            }
-            
-            if (error) showToast("Error: " + error.message, true);
-            else { 
-                showToast(editingExitId ? "Actualizado" : "Guardado"); 
-                cancelEditMode(); 
-                
-                // Forzar limpieza de campos ocultos por seguridad
-                document.getElementById('exitStatus').value = 'PENDIENTE';
-                document.getElementById('exitSignedBy').value = 'S/N';
-                
-                await fetchExits(); 
-                showPage('calendarView'); 
-            }
-            setLoading(false);
-        });
-
-        async function authorizeExit(id) {
-            setLoading(true);
-            const { error } = await supabaseClient.from('exits').update({ 
-                status: 'AUTORIZADO',
-                signed_by: userProfile.name || userProfile.email 
-            }).eq('id', id);
-
-            if (error) showToast("Error: " + error.message, true);
-            else { showToast("Autorizado"); await fetchExits(); }
-            setLoading(false);
-        }
-
-        function handleDeleteExit(id) {
-            showConfirmModal(
-                "Eliminar Salida",
-                "¿Estás seguro de eliminar permanentemente este registro?",
-                async () => {
-                    setLoading(true);
-                    const targetId = isNaN(id) ? id : Number(id);
-
-                    const { error } = await supabaseClient.from('exits').delete().eq('id', targetId);
-                        
-                    if(error) {
-                        showToast("Error al eliminar: " + error.message, true);
-                    } else {
-                        const { data: verifyData } = await supabaseClient.from('exits').select('id').eq('id', targetId);
-                        
-                        if (verifyData && verifyData.length > 0) {
-                            showAlertModal(
-                                "Acción Bloqueada (RLS)", 
-                                "El registro no se pudo borrar debido a la política de seguridad (RLS) de Supabase.\n\nVe a tu panel de Supabase > Authentication > Policies y asegúrate de permitir DELETE en la tabla 'exits'."
-                            );
-                            showToast("Bloqueado por permisos (RLS)", true);
-                        } else {
-                            await fetchExits(true); 
-                            showToast("Registro eliminado con éxito");
-                        }
-                    }
-                    setLoading(false);
-                }
-            );
-        }
-
-        function renderApprovals() {
-            const list = document.getElementById('approvalsList');
-            const pending = exitsData.filter(e => e.status && e.status.trim().toUpperCase() === 'PENDIENTE');
-            if (pending.length === 0) {
-                list.innerHTML = '<div class="text-center py-10 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200"><p class="text-slate-400 text-sm font-bold uppercase tracking-widest">No hay salidas pendientes</p></div>';
-                return;
-            }
-            list.innerHTML = pending.map(e => `
-                <div onclick="showExitDetails('${e.id}')" class="bg-slate-50 p-5 rounded-[1.5rem] border border-slate-200 shadow-sm flex flex-col gap-4 cursor-pointer hover:bg-white transition-colors">
-                    <div class="flex-1">
-                        <div class="flex justify-between items-start mb-2">
-                            <span class="text-[10px] font-black bg-red-100 text-red-600 px-2.5 py-1 rounded-lg uppercase tracking-wider">PENDIENTE</span>
-                            <span class="text-[10px] font-bold text-slate-400 font-mono">${e.date_str} • ${e.time_str}</span>
-                        </div>
-                        <h3 class="text-base font-black text-slate-900 mb-3 uppercase tracking-tight">${e.name}</h3>
-                        <div class="grid grid-cols-1 gap-2.5">
-                            <div class="flex items-start gap-2.5"><div class="bg-white p-1.5 rounded-lg border border-slate-100"><i data-lucide="map-pin" class="w-4 h-4 text-slate-400"></i></div><div><p class="text-[9px] font-black text-slate-400 uppercase leading-none mb-0.5">Destino</p><p class="text-xs font-bold text-slate-700 leading-tight">${e.place}</p></div></div>
-                            <div class="flex items-start gap-2.5"><div class="bg-white p-1.5 rounded-lg border border-slate-100"><i data-lucide="briefcase" class="w-4 h-4 text-slate-400"></i></div><div><p class="text-[9px] font-black text-slate-400 uppercase leading-none mb-0.5">Trabajo a realizar</p><p class="text-xs font-medium text-slate-600 leading-tight">${e.job}</p></div></div>
-                            <div class="flex items-start gap-2.5"><div class="bg-white p-1.5 rounded-lg border border-slate-100"><i data-lucide="truck" class="w-4 h-4 text-slate-400"></i></div><div><p class="text-[9px] font-black text-slate-400 uppercase leading-none mb-0.5">Vehículo / Equipo</p><p class="text-xs font-medium text-slate-600 leading-tight">${e.equipment || 'No especificado'}</p></div></div>
-                        </div>
-                    </div>
-                    <div class="pt-2 border-t border-slate-200/60">
-                        <button onclick="event.stopPropagation(); authorizeExit('${e.id}')" class="w-full bg-green-600 hover:bg-green-700 active:scale-[0.98] text-white py-3.5 rounded-xl font-bold text-sm transition-all shadow-lg shadow-green-100 flex items-center justify-center gap-2 uppercase tracking-widest"><i data-lucide="check-circle" class="w-4 h-4"></i> Autorizar</button>
-                    </div>
-                </div>
-            `).join('');
-            lucide.createIcons();
-        }
-
-        function showPage(id) {
-            document.querySelectorAll('main > div').forEach(el => el.classList.add('hidden'));
-            document.getElementById(`page_${id}`).classList.remove('hidden');
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                const isActive = btn.dataset.page === id;
-                if (btn.classList.contains('mobile-nav')) {
-                    btn.classList.toggle('bg-red-50', isActive); btn.classList.toggle('text-red-600', isActive); btn.classList.toggle('text-slate-400', !isActive);
-                } else {
-                    btn.classList.toggle('bg-red-600', isActive); btn.classList.toggle('text-white', isActive); btn.classList.toggle('text-slate-500', !isActive);
-                }
-            });
-            if (id === 'calendarView') renderCalendar();
-            if (id === 'approvals') renderApprovals();
-            if (id === 'adminUsers') renderUsers();
-            if (id === 'reports') applyReportFilters();
-        }
-
+        // Admin
         async function renderUsers() {
             const { data } = await supabaseClient.from('profiles').select('*').order('name');
             const body = document.getElementById('userTableBody');
@@ -1643,6 +1710,7 @@
             lucide.createIcons();
         }
 
+        // Utils
         function setLoading(s) { document.getElementById('globalLoader').classList.toggle('hidden', !s); }
         function showToast(m, e=false) {
             const t = document.getElementById('toast'); document.getElementById('toastMsg').textContent = m;
@@ -1650,14 +1718,21 @@
             t.style.transform = 'translateY(0)'; setTimeout(() => t.style.transform = 'translateY(150px)', 3000);
         }
 
-        async function handleLogout() { setLoading(true); if(pollingTimer) clearInterval(pollingTimer); await supabaseClient.auth.signOut(); window.location.reload(); }
-        window.handleLogout = handleLogout;
-
+        // Event Listeners (Login & User Forms)
         const loginForm = document.getElementById('loginForm');
         if(loginForm) {
             loginForm.addEventListener('submit', async (e) => {
                 e.preventDefault(); setLoading(true);
                 
+                if ("Notification" in window && Notification.permission === "default") {
+                    Notification.requestPermission().then(p => {
+                        if (p === 'granted') {
+                            document.getElementById('notifBadge').classList.remove('hidden');
+                            document.getElementById('bellBtn').classList.add('text-amber-500');
+                        }
+                    });
+                }
+
                 const email = document.getElementById('loginEmail').value;
                 const password = document.getElementById('loginPass').value;
                 const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
