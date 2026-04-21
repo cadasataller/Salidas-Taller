@@ -152,7 +152,7 @@
                 </div>
                 
                 <div class="hidden md:flex items-center gap-2 bg-slate-50 p-1.5 rounded-2xl border border-slate-200">
-                    <button data-page="registerExit" onclick="showPage('registerExit')" class="nav-btn reg-link hidden px-4 py-2.5 rounded-xl text-sm font-bold transition-all text-slate-500 hover:bg-white hover:text-slate-900">Registrar</button>
+                    <button data-page="registerExit" onclick="showPage('registerExit')" class="nav-btn reg-link hidden px-4 py-2.5 rounded-xl text-sm font-bold transition-all text-slate-500 hover:bg-white hover:text-slate-900">Nueva salida</button>
                     <button data-page="calendarView" onclick="showPage('calendarView')" class="nav-btn px-4 py-2.5 rounded-xl text-sm font-bold transition-all text-slate-500 hover:bg-white hover:text-slate-900">Historial</button>
                     <button data-page="approvals" onclick="showPage('approvals')" class="nav-btn auth-link hidden px-4 py-2.5 rounded-xl text-sm font-bold transition-all text-slate-500 hover:bg-white hover:text-slate-900">Aprobaciones</button>
                     <button data-page="reports" onclick="showPage('reports')" class="nav-btn px-4 py-2.5 rounded-xl text-sm font-bold transition-all text-slate-500 hover:bg-white hover:text-slate-900">Informe</button>
@@ -212,38 +212,38 @@
 
                     <form id="exitForm" class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
                         <div class="space-y-1 md:col-span-2">
-                            <label class="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Fecha de Salida</label>
+                            <label class="flex items-center gap-1.5 text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider ml-1"><i data-lucide="calendar" class="w-4 h-4 text-slate-400"></i> Fecha de Salida</label>
                             <input type="date" id="exitDate" required class="w-full p-2.5 md:p-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500 outline-none transition-all text-sm font-medium">
                         </div>
                         <div class="space-y-1">
-                            <label class="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Responsable</label>
+                            <label class="flex items-center gap-1.5 text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider ml-1"><i data-lucide="user" class="w-4 h-4 text-slate-400"></i> Responsable</label>
                             <input type="text" id="exitName" list="namesList" required class="w-full p-2.5 md:p-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500 outline-none transition-all text-sm font-medium">
                             <datalist id="namesList"></datalist>
                         </div>
                         <div class="space-y-1">
-                            <label class="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Destino</label>
+                            <label class="flex items-center gap-1.5 text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider ml-1"><i data-lucide="map-pin" class="w-4 h-4 text-slate-400"></i> Destino</label>
                             <input type="text" id="exitPlace" list="placesList" required class="w-full p-2.5 md:p-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500 outline-none transition-all text-sm font-medium">
                             <datalist id="placesList"></datalist>
                         </div>
                         <div class="space-y-1">
-                            <label class="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Acompañante (Enter o Coma para agregar)</label>
+                            <label class="flex items-center gap-1.5 text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider ml-1"><i data-lucide="users" class="w-4 h-4 text-slate-400"></i> Acompañante (Enter o Coma para agregar)</label>
                             <input type="text" id="companionInput" list="companionsList" class="w-full p-2.5 md:p-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500 outline-none transition-all text-sm font-medium" placeholder="Escribir...">
                             <datalist id="companionsList"></datalist>
                             <div id="companionTags" class="tag-container"></div>
                             <input type="hidden" id="exitCompanion">
                         </div>
                         <div class="space-y-1">
-                            <label class="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Vehículo / Equipo</label>
+                            <label class="flex items-center gap-1.5 text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider ml-1"><i data-lucide="truck" class="w-4 h-4 text-slate-400"></i> Vehículo / Equipo</label>
                             <input type="text" id="exitEquipment" list="equipmentsList" class="w-full p-2.5 md:p-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500 outline-none transition-all text-sm font-medium">
                             <datalist id="equipmentsList"></datalist>
                         </div>
                         <div class="md:col-span-2 space-y-1">
-                            <label class="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Trabajo a realizar</label>
+                            <label class="flex items-center gap-1.5 text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider ml-1"><i data-lucide="briefcase" class="w-4 h-4 text-slate-400"></i> Trabajo a realizar</label>
                             <input type="text" id="exitJob" list="jobsList" required class="w-full p-2.5 md:p-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500 outline-none transition-all text-sm font-medium">
                             <datalist id="jobsList"></datalist>
                         </div>
                         <div class="md:col-span-2 space-y-1">
-                            <label class="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Material (Enter o Coma para agregar)</label>
+                            <label class="flex items-center gap-1.5 text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider ml-1"><i data-lucide="wrench" class="w-4 h-4 text-slate-400"></i> Material (Enter o Coma para agregar)</label>
                             <input type="text" id="materialInput" list="materialsList" class="w-full p-2.5 md:p-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500 outline-none transition-all text-sm font-medium" placeholder="Escribir...">
                             <datalist id="materialsList"></datalist>
                             <div id="materialTags" class="tag-container"></div>
@@ -1498,6 +1498,7 @@
             const now = new Date();
             const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
             
+            // Creamos el objeto base SOLO con los datos que el usuario teclea
             const newExit = {
                 name: document.getElementById('exitName').value,
                 companion: document.getElementById('exitCompanion').value,
@@ -1505,17 +1506,40 @@
                 place: document.getElementById('exitPlace').value,
                 job: document.getElementById('exitJob').value,
                 material: document.getElementById('exitMaterial').value,
-                status: document.getElementById('exitStatus').value,
-                signed_by: document.getElementById('exitSignedBy').value,
                 date_str: document.getElementById('exitDate').value,
                 time_str: timeStr,
                 user_id: (await supabaseClient.auth.getUser()).data.user.id
             };
+            
             let error;
-            if (editingExitId) { const { error: err } = await supabaseClient.from('exits').update(newExit).eq('id', editingExitId); error = err; }
-            else { const { error: err } = await supabaseClient.from('exits').insert([newExit]); error = err; }
+            if (editingExitId) { 
+                // SI ESTAMOS EDITANDO: Respetamos el estado que ya tenía el registro
+                newExit.status = document.getElementById('exitStatus').value;
+                newExit.signed_by = document.getElementById('exitSignedBy').value;
+                
+                const { error: err } = await supabaseClient.from('exits').update(newExit).eq('id', editingExitId); 
+                error = err; 
+            } else { 
+                // SI ES UN REGISTRO NUEVO: FORZAMOS SIEMPRE A QUE SEA PENDIENTE (Evita auto-aprobaciones)
+                newExit.status = 'PENDIENTE';
+                newExit.signed_by = 'S/N';
+                
+                const { error: err } = await supabaseClient.from('exits').insert([newExit]); 
+                error = err; 
+            }
+            
             if (error) showToast("Error: " + error.message, true);
-            else { showToast(editingExitId ? "Actualizado" : "Guardado"); cancelEditMode(); await fetchExits(); showPage('calendarView'); }
+            else { 
+                showToast(editingExitId ? "Actualizado" : "Guardado"); 
+                cancelEditMode(); 
+                
+                // Forzar limpieza de campos ocultos por seguridad
+                document.getElementById('exitStatus').value = 'PENDIENTE';
+                document.getElementById('exitSignedBy').value = 'S/N';
+                
+                await fetchExits(); 
+                showPage('calendarView'); 
+            }
             setLoading(false);
         });
 
